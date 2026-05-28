@@ -82,8 +82,8 @@ export default function Options(){
           <div className="card" style={{marginTop:18}}>
             <h3 style={{marginTop:0}}>Talk Through Your Situation</h3>
             <p className="small">
-              No pressure—just clear answers. Call <a href="tel:+15712753720">(571) 275-3720</a> or email{" "}
-              <a href="mailto:hello@barokgroup.org">hello@barokgroup.org</a>. We respond quickly and keep your info private.
+              No pressure—just clear answers. Call <a href="tel:+18335233104">(833) 523-3104</a> or email{" "}
+              <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>. We respond quickly and keep your info private.
             </p>
             <p className="small">
               Prefer to review terms first? Read our <Link href="/terms">Terms &amp; Conditions</Link>.
