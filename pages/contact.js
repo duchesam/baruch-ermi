@@ -10,7 +10,7 @@ export default function Contact(){
           <h1>Contact</h1>
           <p>We move fast and keep things simple.</p>
           <p><strong>Phone:</strong> <a href="tel:+18335233104">(833) 523-3104</a></p>
-          <p><strong>Email:</strong> <a href="mailto:hello@barokgroup.org">hello@barokgroup.org</a></p>
+          <p><strong>Email:</strong> <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a></p>
           <p className="small">Baruc-Ermi — Nationwide foreclosure & auction solutions.</p>
         </div>
       </main>
