@@ -38,7 +38,7 @@ export default function Home(){
         <section className="section">
           <div className="container card">
             <h3 style={{marginTop:0}}>Talk to a real person today</h3>
-            <p className="small">Call <a href="tel:+15712753720">(571) 275-3720</a> or email <a href="mailto:hello@barokgroup.org">hello@barokgroup.org</a>. No pressure—just clear answers.</p>
+            <p className="small">Call <a href="tel:+18335233104">(833) 523-3104</a> or email <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>. No pressure—just clear answers.</p>
           </div>
         </section>
       </main>
