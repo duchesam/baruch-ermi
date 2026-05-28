@@ -7,7 +7,7 @@ export default function Home(){
   return (
     <>
       <Head>
-        <title>Barok Group — Nationwide Foreclosure Help</title>
+        <title>Baruch-Ermi — Nationwide Foreclosure Help</title>
         <meta name="description" content="Real options to stop auctions, avoid foreclosure, and move forward with clarity." />
       </Head>
       <Header />
