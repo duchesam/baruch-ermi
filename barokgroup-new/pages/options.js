@@ -38,11 +38,11 @@ export default function Options(){
 
           <div className="card" style={{marginTop:18}}>
             <h3 style={{marginTop:0}}>Talk Through Your Situation</h3>
-            <p className="small">No pressure—just clear answers. Call <a href="tel:+15712753720">(571) 275-3720</a> or email <a href="mailto:hello@barokgroup.org">hello@barokgroup.org</a>. Prefer to review terms first? Read our <Link href="/terms">Terms &amp; Conditions</Link>.</p>
+            <p className="small">No pressure—just clear answers. Call <a href="tel:+18335233104">(833) 523-3104</a> or email <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>. Prefer to review terms first? Read our <Link href="/terms">Terms &amp; Conditions</Link>.</p>
           </div>
 
           <div className="small muted" style={{marginTop:8}}>
-            <p>Disclaimer: Barok Group is not a law firm or financial advisor. This page is educational only; consult licensed professionals in your state.</p>
+            <p>Disclaimer: Baruch-Ermi is not a law firm or financial advisor. This page is educational only; consult licensed professionals in your state.</p>
           </div>
         </div>
       </main>
