@@ -8,7 +8,7 @@ export default function Header(){
       <div className="container nav-inner">
         <Link href="/" className="brand" onClick={()=>setOpen(false)}>
           <span className="dot" />
-          <span>Barok Group</span>
+          <span>Baruch-Ermi</span>
         </Link>
 
         {/* desktop */}
