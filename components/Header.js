@@ -4,14 +4,14 @@ export default function Header(){
   return (
     <header className="nav">
       <div className="container" style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
-        <Link href="/" className="brand">Barok Group</Link>
+        <Link href="/" className="brand">Baruch-Ermi</Link>
         <nav className="navlinks">
           <Link href="/about">About</Link>
           <Link href="/options">Options</Link>
           <Link href="/services">Services</Link>
           <Link href="/faq">FAQ</Link>
           <Link href="/contact">Contact</Link>
-          <a className="btn" href="tel:+15712753720">Call (571) 275-3720</a>
+          <a className="btn" href="tel:+18335233104">Call (833) 523-3104</a>
         </nav>
       </div>
       <style jsx>{`
