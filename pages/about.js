@@ -6,7 +6,7 @@ export default function About(){
   return (
     <>
       <Head>
-        <title>About Us — Barok Group</title>
+        <title>About Us — Baruch-Ermi</title>
         <meta name="description" content="Respectful, no-pressure help for owners facing foreclosure or auction. Real options, clear outcomes." />
       </Head>
       <Header />
@@ -41,7 +41,7 @@ export default function About(){
 
             <h3>Talk with Us</h3>
             <p className="small">
-              Call <a href="tel:+15712753720">(571) 275-3720</a> or email <a href="mailto:hello@barokgroup.org">hello@barokgroup.org</a>.
+              Call <a href="tel:+18335233104">(18335233104)</a> or email <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>.
             </p>
           </div>
         </div>
