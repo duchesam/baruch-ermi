@@ -13,7 +13,7 @@ export default function About(){
       <main className="section">
         <div className="container" style={{maxWidth:"900px"}}>
           <div className="card">
-            <h1 style={{marginTop:0}}>Welcome to Barok Group</h1>
+            <h1 style={{marginTop:0}}>Welcome to Baruch-Ermi Foreclosure Solutions</h1>
             <p className="small">
               We specialize in helping homeowners who are ready for their next chapter—whether that means
               keeping the home, selling before auction, or choosing a creative path that protects credit and equity.
