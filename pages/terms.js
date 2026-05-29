@@ -10,7 +10,7 @@ export default function Terms() {
         <div className="container">
           <h1>Terms &amp; Conditions</h1>
 
-          <p className="small">
+          <p>
             By using this website and submitting information to Baruch-Ermi LLC,
             you agree to these Terms and Conditions.
           </p>
@@ -45,18 +45,10 @@ export default function Terms() {
             service.
           </p>
 
-          <h2>Privacy</h2>
-          <p>
-            Please review our Privacy Policy to understand how we collect, use,
-            and protect your information.
-          </p>
-
           <h2>Contact Information</h2>
           <p>
-            Baruch-Ermi LLC
-            <br />
-            admin@baruchermi.org
-            <br />
+            Baruch-Ermi LLC<br />
+            admin@baruchermi.org<br />
             (833) 523-3104
           </p>
         </div>
