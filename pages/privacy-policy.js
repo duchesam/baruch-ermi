@@ -10,7 +10,7 @@ export default function PrivacyPolicy() {
         <div className="container">
           <h1>Privacy Policy</h1>
 
-          <p className="small">
+          <p>
             Baruch-Ermi LLC respects your privacy and is committed to protecting
             your personal information.
           </p>
@@ -55,10 +55,8 @@ export default function PrivacyPolicy() {
 
           <h2>Contact Information</h2>
           <p>
-            Baruch-Ermi LLC
-            <br />
-            admin@baruchermi.org
-            <br />
+            Baruch-Ermi LLC<br />
+            admin@baruchermi.org<br />
             (833) 523-3104
           </p>
         </div>
