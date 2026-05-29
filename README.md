@@ -1,6 +1,6 @@
-# Barok Group (Next 13)
+# Baruch-Ermi (Next 13)
 
-Emails are set to **hello@barokgroup.org**.
+Emails are set to **admin@baruchermi.org**.
 
 ## Dev
 npm install
