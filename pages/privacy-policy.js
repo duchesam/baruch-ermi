@@ -1,96 +1,70 @@
-cat > pages/privacy-policy.js <<'EOF'
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+
 export default function PrivacyPolicy() {
   return (
-    <div style={{maxWidth:'900px',margin:'40px auto',padding:'20px',fontFamily:'Arial'}}>
-      <h1>Privacy Policy</h1>
+    <>
+      <Header />
 
-      <p>Baruch-Ermi LLC respects your privacy and is committed to protecting your personal information.</p>
+      <main className="section">
+        <div className="container">
+          <h1>Privacy Policy</h1>
 
-      <h2>Information We Collect</h2>
-      <ul>
-        <li>Name</li>
-        <li>Phone Number</li>
-        <li>Email Address</li>
-        <li>Property Information</li>
-      </ul>
+          <p className="small">
+            Baruch-Ermi LLC respects your privacy and is committed to protecting
+            your personal information.
+          </p>
 
-      <h2>How We Use Information</h2>
-      <ul>
-        <li>Respond to inquiries</li>
-        <li>Provide property evaluations and offers</li>
-        <li>Schedule appointments</li>
-        <li>Provide customer support</li>
-      </ul>
+          <h2>Information We Collect</h2>
+          <p>
+            We may collect your name, phone number, email address, property
+            address, property details, and other information you voluntarily
+            submit through our website or forms.
+          </p>
 
-      <h2>SMS Communications</h2>
-      <p>
-        By providing your phone number and opting in, you consent to receive SMS
-        messages from Baruch-Ermi LLC regarding real estate inquiries,
-        appointment reminders, transaction updates, and customer support.
-      </p>
+          <h2>How We Use Your Information</h2>
+          <p>
+            We use your information to respond to inquiries, evaluate property
+            details, provide property offers, schedule appointments, send
+            transaction updates, and provide customer support.
+          </p>
 
-      <p>
-        Message frequency may vary. Message and data rates may apply.
-        Reply STOP to unsubscribe. Reply HELP for assistance.
-      </p>
+          <h2>SMS Communications</h2>
+          <p>
+            By providing your phone number and choosing to opt in, you consent
+            to receive SMS messages from Baruch-Ermi LLC regarding real estate
+            inquiries, appointment reminders, transaction updates, property
+            offers, and customer support communications.
+          </p>
 
-      <p>
-        We do not sell or share your mobile information with third parties for
-        marketing purposes.
-      </p>
+          <p>
+            Message frequency may vary. Message and data rates may apply. Reply
+            STOP to unsubscribe. Reply HELP for assistance.
+          </p>
 
-      <h2>Contact</h2>
-      <p>
-        Baruch-Ermi LLC<br/>
-        admin@baruchermi.org<br/>
-        (833) 523-3104
-      </p>
-    </div>
+          <p>
+            SMS consent is optional and is not a condition of purchase or
+            service.
+          </p>
+
+          <h2>Information Sharing</h2>
+          <p>
+            We do not sell or share your mobile information with third parties
+            for marketing purposes.
+          </p>
+
+          <h2>Contact Information</h2>
+          <p>
+            Baruch-Ermi LLC
+            <br />
+            admin@baruchermi.org
+            <br />
+            (833) 523-3104
+          </p>
+        </div>
+      </main>
+
+      <Footer />
+    </>
   );
 }
-EOF
-
-cat > pages/terms.js <<'EOF'
-export default function Terms() {
-  return (
-    <div style={{maxWidth:'900px',margin:'40px auto',padding:'20px',fontFamily:'Arial'}}>
-      <h1>Terms & Conditions</h1>
-
-      <h2>Services</h2>
-      <p>
-        Baruch-Ermi LLC provides real estate consultation, property acquisition
-        services, seller solutions, and related support.
-      </p>
-
-      <h2>No Obligation</h2>
-      <p>
-        Submitting information through our website or forms does not create any
-        obligation to sell property or enter into a transaction.
-      </p>
-
-      <h2>SMS Terms</h2>
-      <p>
-        If you choose to opt in to SMS communications, you agree to receive
-        messages regarding your inquiry, appointment reminders, transaction
-        updates, and customer support.
-      </p>
-
-      <p>
-        Message frequency may vary. Message and data rates may apply.
-        Reply STOP to unsubscribe. Reply HELP for assistance.
-      </p>
-
-      <h2>Contact</h2>
-      <p>
-        Baruch-Ermi LLC<br/>
-        admin@baruchermi.org<br/>
-        (833) 523-3104
-      </p>
-    </div>
-  );
-}
-EOF
-
-git add .
-git commit -m "Add privacy policy and terms pages"
-git push origin main
