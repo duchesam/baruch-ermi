@@ -3,8 +3,7 @@ import Link from "next/link";
 export default function Header() {
   return (
     <header className="nav">
-      <div className="container navwrap">
-        
+      <div className="navwrap">
         <Link href="/" className="brand">
           Baruch-Ermi
         </Link>
@@ -20,7 +19,6 @@ export default function Header() {
         <a className="btn phonebtn" href="tel:18335233104">
           Call (833) 523-3104
         </a>
-
       </div>
 
       <style jsx>{`
@@ -28,32 +26,32 @@ export default function Header() {
           position: sticky;
           top: 0;
           z-index: 20;
-          backdrop-filter: saturate(1.2) blur(6px);
-          background: rgba(5, 12, 24, 0.75);
+          background: rgba(5, 12, 24, 0.92);
           border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
         .navwrap {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          width: 100%;
           min-height: 72px;
+          padding: 0 48px;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
         }
 
         .brand {
-          font-size: 28px;
+          justify-self: start;
+          font-size: 24px;
           font-weight: 800;
           color: #ffffff;
           text-decoration: none;
-          flex: 1;
         }
 
         .navlinks {
+          justify-self: center;
           display: flex;
-          justify-content: center;
           align-items: center;
-          gap: 32px;
-          flex: 2;
+          gap: 34px;
         }
 
         .navlinks a {
@@ -68,29 +66,26 @@ export default function Header() {
         }
 
         .phonebtn {
-          flex: 1;
-          display: flex;
-          justify-content: flex-end;
+          justify-self: end;
+          white-space: nowrap;
         }
 
         @media (max-width: 900px) {
           .navwrap {
-            flex-direction: column;
-            gap: 12px;
-            padding: 12px 0;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            padding: 16px 20px;
           }
 
-          .brand {
-            text-align: center;
+          .brand,
+          .navlinks,
+          .phonebtn {
+            justify-self: center;
           }
 
           .navlinks {
             gap: 16px;
             flex-wrap: wrap;
-          }
-
-          .phonebtn {
-            justify-content: center;
           }
         }
       `}</style>
