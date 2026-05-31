@@ -8,281 +8,197 @@ export default function GetOffer() {
 
       <main className="section">
         <div className="container">
-          <div className="offerWrap">
-            <section className="card formCard">
-              <h1>Get Your No-Obligation Cash Offer</h1>
-              <p className="small">
-                Tell us about your property and timeline. Baruch-Ermi LLC will
-                review your information and contact you with next steps.
-              </p>
 
-              <form
-                action="https://formspree.io/f/YOUR_FORM_ID"
-                method="POST"
-                className="sellerForm"
+          <div className="card" style={{ maxWidth: "900px", margin: "0 auto" }}>
+            <h1>Get Your No-Obligation Cash Offer</h1>
+
+            <p className="small">
+              Tell us about your property and we'll review your situation and
+              contact you shortly.
+            </p>
+
+            <form
+              action="https://formspree.io/f/YOUR_FORM_ID"
+              method="POST"
+            >
+
+              <h2>Property Information</h2>
+
+              <label>Property Address *</label>
+              <input
+                type="text"
+                name="property_address"
+                required
+                style={inputStyle}
+              />
+
+              <label>Property Type *</label>
+              <select
+                name="property_type"
+                required
+                style={inputStyle}
               >
-                <h2>Property Information</h2>
+                <option value="">Select</option>
+                <option>Single Family</option>
+                <option>Condo / Townhouse</option>
+                <option>Multi-Family</option>
+                <option>Land</option>
+              </select>
 
-                <label>
-                  Property Address *
+              <div style={rowStyle}>
+                <div>
+                  <label>Bedrooms</label>
                   <input
-                    type="text"
-                    name="property_address"
-                    placeholder="Street, City, State, ZIP"
-                    required
+                    type="number"
+                    name="bedrooms"
+                    style={inputStyle}
                   />
-                </label>
-
-                <label>
-                  Property Type
-                  <select name="property_type">
-                    <option value="">Select one</option>
-                    <option>Single-family</option>
-                    <option>Condo/Townhouse</option>
-                    <option>Multi-family</option>
-                    <option>Land</option>
-                    <option>Other</option>
-                  </select>
-                </label>
-
-                <div className="grid3">
-                  <label>
-                    Bedrooms
-                    <input type="text" name="bedrooms" placeholder="3" />
-                  </label>
-
-                  <label>
-                    Bathrooms
-                    <input type="text" name="bathrooms" placeholder="2" />
-                  </label>
-
-                  <label>
-                    Square Feet
-                    <input type="text" name="square_feet" placeholder="1,500" />
-                  </label>
                 </div>
 
-                <h2>Property Situation</h2>
-
-                <label>
-                  Property Condition
-                  <select name="property_condition">
-                    <option value="">Select one</option>
-                    <option>Move-in ready</option>
-                    <option>Needs minor repairs</option>
-                    <option>Needs major repairs</option>
-                    <option>Unknown</option>
-                  </select>
-                </label>
-
-                <label>
-                  Reason for Selling
-                  <select name="reason_for_selling">
-                    <option value="">Select one</option>
-                    <option>Need to sell fast</option>
-                    <option>Facing foreclosure</option>
-                    <option>Inherited property</option>
-                    <option>Tired landlord</option>
-                    <option>Relocation</option>
-                    <option>Other</option>
-                  </select>
-                </label>
-
-                <label>
-                  When would you ideally like to close?
-                  <select name="closing_timeline">
-                    <option value="">Select one</option>
-                    <option>As soon as possible</option>
-                    <option>30-60 days</option>
-                    <option>60-90 days</option>
-                    <option>Flexible</option>
-                    <option>Just exploring options</option>
-                  </select>
-                </label>
-
-                <label>
-                  Additional Details
-                  <textarea
-                    name="details"
-                    rows="4"
-                    placeholder="Tell us anything important about the property or your situation."
-                  ></textarea>
-                </label>
-
-                <h2>Contact Information</h2>
-
-                <div className="grid2">
-                  <label>
-                    Full Name *
-                    <input type="text" name="full_name" required />
-                  </label>
-
-                  <label>
-                    Phone Number *
-                    <input type="tel" name="phone" required />
-                  </label>
+                <div>
+                  <label>Bathrooms</label>
+                  <input
+                    type="number"
+                    step="0.5"
+                    name="bathrooms"
+                    style={inputStyle}
+                  />
                 </div>
+              </div>
 
-                <label>
-                  Email Address
-                  <input type="email" name="email" />
-                </label>
+              <label>Approximate Square Footage</label>
+              <input
+                type="text"
+                name="square_feet"
+                style={inputStyle}
+              />
 
-                <div className="consentBox">
-                  <label className="checkboxLabel">
-                    <input type="checkbox" name="sms_consent" value="yes" />
-                    <span>
-                      I agree to receive SMS messages from Baruch-Ermi LLC
-                      regarding real estate inquiries, property offers,
-                      appointment reminders, transaction updates, and customer
-                      support communications. Message frequency may vary.
-                      Message and data rates may apply. Reply STOP to
-                      unsubscribe. Reply HELP for help. Consent is not a
-                      condition of purchase or service.
-                    </span>
-                  </label>
+              <h2>Property Situation</h2>
 
-                  <p className="small">
-                    By opting in to SMS communications, you agree to our{" "}
-                    <a href="/terms">Terms &amp; Conditions</a> and{" "}
-                    <a href="/privacy-policy">Privacy Policy</a>.
-                  </p>
-                </div>
+              <label>Property Condition</label>
+              <select
+                name="condition"
+                style={inputStyle}
+              >
+                <option>Move-in Ready</option>
+                <option>Needs Minor Repairs</option>
+                <option>Needs Major Repairs</option>
+              </select>
 
-                <button className="btn submitBtn" type="submit">
-                  Get My Cash Offer
-                </button>
-              </form>
-            </section>
+              <label>Reason For Selling</label>
+              <select
+                name="reason_for_selling"
+                style={inputStyle}
+              >
+                <option>Need To Sell Fast</option>
+                <option>Facing Foreclosure</option>
+                <option>Inherited Property</option>
+                <option>Tired Landlord</option>
+                <option>Other</option>
+              </select>
 
-            <aside className="card sideCard">
-              <h2>What Happens Next?</h2>
-              <ul>
-                <li>We review your property details.</li>
-                <li>We contact you to confirm your situation and timeline.</li>
-                <li>You receive clear options with no pressure.</li>
-              </ul>
+              <label>Desired Closing Timeline</label>
+              <select
+                name="closing_timeline"
+                style={inputStyle}
+              >
+                <option>ASAP (0-30 Days)</option>
+                <option>30-60 Days</option>
+                <option>60-90 Days</option>
+                <option>Flexible</option>
+              </select>
 
-              <h2>Need Help Now?</h2>
-              <p>
-                Call us directly at{" "}
-                <a href="tel:+18335233104">(833) 523-3104</a>.
-              </p>
+              <h2>Contact Information</h2>
 
-              <p className="small">
-                No agents. No pressure. Just respectful conversations and real
-                options.
-              </p>
-            </aside>
+              <label>Full Name *</label>
+              <input
+                type="text"
+                name="full_name"
+                required
+                style={inputStyle}
+              />
+
+              <label>Phone Number *</label>
+              <input
+                type="tel"
+                name="phone"
+                required
+                style={inputStyle}
+              />
+
+              <label>Email Address</label>
+              <input
+                type="email"
+                name="email"
+                style={inputStyle}
+              />
+
+              <h2>SMS Consent</h2>
+
+              <label
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  alignItems: "flex-start",
+                  marginTop: "10px"
+                }}
+              >
+                <input
+                  type="checkbox"
+                  name="sms_consent"
+                />
+
+                <span>
+                  I agree to receive SMS messages from Baruch-Ermi LLC
+                  regarding real estate inquiries, appointment reminders,
+                  transaction updates, property offers, and customer support
+                  communications. Message frequency may vary. Message and
+                  data rates may apply. Reply STOP to unsubscribe.
+                  Reply HELP for assistance. Consent is not a condition of
+                  purchase or service.
+                </span>
+              </label>
+
+              <div style={{ marginTop: "20px" }}>
+                <a href="/privacy-policy">
+                  Privacy Policy
+                </a>
+                {" | "}
+                <a href="/terms">
+                  Terms & Conditions
+                </a>
+              </div>
+
+              <button
+                type="submit"
+                className="btn"
+                style={{ marginTop: "30px" }}
+              >
+                Get My Cash Offer
+              </button>
+
+            </form>
           </div>
+
         </div>
       </main>
 
       <Footer />
+    </>
+  );
+}
 
-      <style jsx>{`
-        .offerWrap {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 28px;
-          align-items: start;
-        }
+const inputStyle = {
+  width: "100%",
+  padding: "12px",
+  marginTop: "6px",
+  marginBottom: "18px",
+  borderRadius: "8px",
+  border: "1px solid #333",
+};
 
-        .formCard,
-        .sideCard {
-          padding: 32px;
-        }
-
-        .sellerForm {
-          display: flex;
-          flex-direction: column;
-          gap: 18px;
-          margin-top: 24px;
-        }
-
-        h2 {
-          margin-top: 18px;
-          margin-bottom: 0;
-        }
-
-        label {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-          font-weight: 700;
-        }
-
-        input,
-        select,
-        textarea {
-          width: 100%;
-          padding: 13px 14px;
-          border-radius: 10px;
-          border: 1px solid rgba(255, 255, 255, 0.16);
-          background: rgba(255, 255, 255, 0.06);
-          color: #ffffff;
-          font-size: 16px;
-        }
-
-        select option {
-          color: #111827;
-        }
-
-        textarea {
-          resize: vertical;
-        }
-
-        .grid2 {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 18px;
-        }
-
-        .grid3 {
-          display: grid;
-          grid-template-columns: 1fr 1fr 1fr;
-          gap: 18px;
-        }
-
-        .consentBox {
-          padding: 18px;
-          border-radius: 14px;
-          border: 1px solid rgba(255, 255, 255, 0.14);
-          background: rgba(255, 255, 255, 0.04);
-        }
-
-        .checkboxLabel {
-          flex-direction: row;
-          align-items: flex-start;
-          gap: 12px;
-          font-weight: 500;
-        }
-
-        .checkboxLabel input {
-          width: auto;
-          margin-top: 5px;
-        }
-
-        .submitBtn {
-          width: 100%;
-          justify-content: center;
-          border: none;
-          cursor: pointer;
-          font-size: 17px;
-          padding: 15px 20px;
-        }
-
-        .sideCard {
-          position: sticky;
-          top: 100px;
-        }
-
-        .sideCard ul {
-          padding-left: 20px;
-          line-height: 1.8;
-        }
-
-        @media (max-width: 900px) {
-          .offerWrap {
-            grid-template-columns: 1fr;
-         
+const rowStyle = {
+  display: "grid",
+  gridTemplateColumns: "1fr 1fr",
+  gap: "15px",
+};
