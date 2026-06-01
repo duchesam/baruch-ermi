@@ -7,179 +7,161 @@ export default function GetOffer() {
       <Header />
 
       <main className="section">
-        <div className="container">
+        <div
+          className="container card"
+          style={{
+            maxWidth: "900px",
+            margin: "0 auto",
+            padding: "40px",
+          }}
+        >
+          <h1>Get Your Cash Offer</h1>
 
-          <div className="card" style={{ maxWidth: "900px", margin: "0 auto" }}>
-            <h1>Get Your No-Obligation Cash Offer</h1>
+          <p className="small" style={{ marginBottom: "25px" }}>
+            Fill out the form below and a member of our team will contact you
+            within 24 hours.
+          </p>
 
-            <p className="small">
-              Tell us about your property and we'll review your situation and
-              contact you shortly.
-            </p>
-
-            <form
-              action="https://formspree.io/f/YOUR_FORM_ID"
-              method="POST"
-            >
-
-              <h2>Property Information</h2>
-
-              <label>Property Address *</label>
-              <input
-                type="text"
-                name="property_address"
-                required
-                style={inputStyle}
-              />
-
-              <label>Property Type *</label>
-              <select
-                name="property_type"
-                required
-                style={inputStyle}
-              >
-                <option value="">Select</option>
-                <option>Single Family</option>
-                <option>Condo / Townhouse</option>
-                <option>Multi-Family</option>
-                <option>Land</option>
-              </select>
-
-              <div style={rowStyle}>
-                <div>
-                  <label>Bedrooms</label>
-                  <input
-                    type="number"
-                    name="bedrooms"
-                    style={inputStyle}
-                  />
-                </div>
-
-                <div>
-                  <label>Bathrooms</label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    name="bathrooms"
-                    style={inputStyle}
-                  />
-                </div>
-              </div>
-
-              <label>Approximate Square Footage</label>
-              <input
-                type="text"
-                name="square_feet"
-                style={inputStyle}
-              />
-
-              <h2>Property Situation</h2>
-
-              <label>Property Condition</label>
-              <select
-                name="condition"
-                style={inputStyle}
-              >
-                <option>Move-in Ready</option>
-                <option>Needs Minor Repairs</option>
-                <option>Needs Major Repairs</option>
-              </select>
-
-              <label>Reason For Selling</label>
-              <select
-                name="reason_for_selling"
-                style={inputStyle}
-              >
-                <option>Need To Sell Fast</option>
-                <option>Facing Foreclosure</option>
-                <option>Inherited Property</option>
-                <option>Tired Landlord</option>
-                <option>Other</option>
-              </select>
-
-              <label>Desired Closing Timeline</label>
-              <select
-                name="closing_timeline"
-                style={inputStyle}
-              >
-                <option>ASAP (0-30 Days)</option>
-                <option>30-60 Days</option>
-                <option>60-90 Days</option>
-                <option>Flexible</option>
-              </select>
-
-              <h2>Contact Information</h2>
-
+          <form
+            action="https://formspree.io/f/xdajryqo"
+            method="POST"
+          >
+            <div style={{ marginBottom: "15px" }}>
               <label>Full Name *</label>
               <input
                 type="text"
-                name="full_name"
+                name="Full Name"
                 required
-                style={inputStyle}
+                style={{ width: "100%", padding: "12px" }}
               />
+            </div>
 
+            <div style={{ marginBottom: "15px" }}>
               <label>Phone Number *</label>
               <input
                 type="tel"
-                name="phone"
+                name="Phone Number"
                 required
-                style={inputStyle}
+                style={{ width: "100%", padding: "12px" }}
               />
+            </div>
 
+            <div style={{ marginBottom: "15px" }}>
               <label>Email Address</label>
               <input
                 type="email"
-                name="email"
-                style={inputStyle}
+                name="Email"
+                style={{ width: "100%", padding: "12px" }}
               />
+            </div>
 
-              <h2>SMS Consent</h2>
+            <div style={{ marginBottom: "15px" }}>
+              <label>Property Address *</label>
+              <input
+                type="text"
+                name="Property Address"
+                required
+                style={{ width: "100%", padding: "12px" }}
+              />
+            </div>
 
-              <label
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "flex-start",
-                  marginTop: "10px"
-                }}
+            <div style={{ marginBottom: "15px" }}>
+              <label>City</label>
+              <input
+                type="text"
+                name="City"
+                style={{ width: "100%", padding: "12px" }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label>State</label>
+              <input
+                type="text"
+                name="State"
+                style={{ width: "100%", padding: "12px" }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label>Estimated Mortgage Balance</label>
+              <input
+                type="text"
+                name="Mortgage Balance"
+                placeholder="$"
+                style={{ width: "100%", padding: "12px" }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label>Desired Selling Price</label>
+              <input
+                type="text"
+                name="Desired Price"
+                placeholder="$"
+                style={{ width: "100%", padding: "12px" }}
+              />
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label>Property Condition</label>
+              <select
+                name="Property Condition"
+                style={{ width: "100%", padding: "12px" }}
               >
+                <option>Excellent</option>
+                <option>Good</option>
+                <option>Fair</option>
+                <option>Needs Repairs</option>
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label>Reason For Selling</label>
+              <textarea
+                name="Reason For Selling"
+                rows="4"
+                style={{ width: "100%", padding: "12px" }}
+              ></textarea>
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <label>
                 <input
                   type="checkbox"
-                  name="sms_consent"
-                />
-
-                <span>
-                  I agree to receive SMS messages from Baruch-Ermi LLC
-                  regarding real estate inquiries, appointment reminders,
-                  transaction updates, property offers, and customer support
-                  communications. Message frequency may vary. Message and
-                  data rates may apply. Reply STOP to unsubscribe.
-                  Reply HELP for assistance. Consent is not a condition of
-                  purchase or service.
-                </span>
+                  name="SMS Consent"
+                />{" "}
+                I agree to receive SMS messages from Baruch-Ermi LLC regarding
+                my inquiry, property offers, appointment reminders, and
+                transaction updates. Message frequency may vary. Reply STOP to
+                unsubscribe. Reply HELP for assistance. Consent is not a
+                condition of purchase.
               </label>
+            </div>
 
-              <div style={{ marginTop: "20px" }}>
-                <a href="/privacy-policy">
-                  Privacy Policy
-                </a>
-                {" | "}
-                <a href="/terms">
-                  Terms & Conditions
-                </a>
-              </div>
+            <button
+              type="submit"
+              className="btn"
+              style={{
+                width: "100%",
+                padding: "15px",
+                fontSize: "18px",
+              }}
+            >
+              Get My Cash Offer
+            </button>
+          </form>
 
-              <button
-                type="submit"
-                className="btn"
-                style={{ marginTop: "30px" }}
-              >
-                Get My Cash Offer
-              </button>
-
-            </form>
-          </div>
-
+          <p
+            className="small"
+            style={{
+              marginTop: "20px",
+              textAlign: "center",
+            }}
+          >
+            By submitting this form you agree to our Privacy Policy and Terms &
+            Conditions.
+          </p>
         </div>
       </main>
 
@@ -187,18 +169,3 @@ export default function GetOffer() {
     </>
   );
 }
-
-const inputStyle = {
-  width: "100%",
-  padding: "12px",
-  marginTop: "6px",
-  marginBottom: "18px",
-  borderRadius: "8px",
-  border: "1px solid #333",
-};
-
-const rowStyle = {
-  display: "grid",
-  gridTemplateColumns: "1fr 1fr",
-  gap: "15px",
-};
