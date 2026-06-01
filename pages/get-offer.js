@@ -129,7 +129,7 @@ export default function GetOffer() {
     <input type="checkbox" name="SMS Consent" />{" "}
     By checking this box and voluntarily providing your phone number, you agree
     to receive SMS messages from Baruch-Ermi LLC regarding your inquiry,
-    property offers, appointment reminders, and transaction updates. Message
+    responses to your inquiry, appointment reminders, transaction updates, and customer support communications. Message
     frequency may vary. Message and data rates may apply. Reply STOP to
     unsubscribe. Reply HELP for assistance. Consent is not a condition of
     purchase.
