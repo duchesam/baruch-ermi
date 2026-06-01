@@ -57,7 +57,7 @@ export default function Header() {
         .navlinks a {
           color: #e5e7eb;
           text-decoration: none;
-          font-size: 16px;
+          font-size: 18px;
           font-weight: 500;
         }
 
