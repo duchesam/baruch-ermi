@@ -37,11 +37,10 @@ export default function GetOffer() {
             </div>
 
             <div style={{ marginBottom: "15px" }}>
-              <label>Phone Number *</label>
+              <label>Phone Number (Optional)</label>
               <input
                 type="tel"
                 name="Phone Number"
-                required
                 style={{ width: "100%", padding: "12px" }}
               />
             </div>
@@ -126,18 +125,26 @@ export default function GetOffer() {
             </div>
 
             <div style={{ marginBottom: "20px" }}>
-              <label>
-                <input
-                  type="checkbox"
-                  name="SMS Consent"
-                />{" "}
-                I agree to receive SMS messages from Baruch-Ermi LLC regarding
-                my inquiry, property offers, appointment reminders, and
-                transaction updates. Message frequency may vary. Reply STOP to
-                unsubscribe. Reply HELP for assistance. Consent is not a
-                condition of purchase.
-              </label>
-            </div>
+  <label>
+    <input type="checkbox" name="SMS Consent" />{" "}
+    By checking this box and voluntarily providing your phone number, you agree
+    to receive SMS messages from Baruch-Ermi LLC regarding your inquiry,
+    property offers, appointment reminders, and transaction updates. Message
+    frequency may vary. Message and data rates may apply. Reply STOP to
+    unsubscribe. Reply HELP for assistance. Consent is not a condition of
+    purchase.
+
+    <br /><br />
+
+    Privacy Policy:
+    https://baruch-ermi.org/privacy-policy
+
+    <br />
+
+    Terms & Conditions:
+    https://baruch-ermi.org/terms
+  </label>
+</div>
 
             <button
               type="submit"
