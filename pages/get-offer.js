@@ -6,7 +6,7 @@ export default function GetOffer() {
     <>
       <Header />
 
-      <main className="section" style={{ paddingTop: "110px" }}>
+      <main className="section" style={{ paddingTop: "20px" }}>
         <div
           className="container card"
           style={{
