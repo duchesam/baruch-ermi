@@ -25,18 +25,19 @@ export default function Header() {
         .nav {
           position: sticky;
           top: 0;
-          z-index: 20;
-          background: rgba(5, 12, 24, 0.92);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          z-index: 50;
+          background: rgba(5, 12, 24, 0.96);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .navwrap {
           width: 100%;
-          min-height: 72px;
+          min-height: 82px;
           padding: 0 48px;
           display: grid;
           grid-template-columns: 1fr auto 1fr;
           align-items: center;
+          box-sizing: border-box;
         }
 
         .brand {
@@ -45,19 +46,20 @@ export default function Header() {
           font-weight: 800;
           color: #ffffff;
           text-decoration: none;
+          white-space: nowrap;
         }
 
         .navlinks {
           justify-self: center;
           display: flex;
           align-items: center;
-          gap: 34px;
+          gap: 38px;
         }
 
         .navlinks a {
           color: #e5e7eb;
           text-decoration: none;
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 500;
         }
 
@@ -84,7 +86,7 @@ export default function Header() {
           }
 
           .navlinks {
-            gap: 16px;
+            gap: 18px;
             flex-wrap: wrap;
           }
         }
