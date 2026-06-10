@@ -10,7 +10,7 @@ export default function GetOffer() {
         <div
           className="container card"
           style={{
-            maxWidth: "900px",
+            maxWidth: "1000px",
             margin: "0 auto",
             padding: "40px",
           }}
