@@ -136,15 +136,19 @@ export default function GetOffer() {
 
     <br /><br />
 
-    Privacy Policy:
-    https://baruch-ermi.org/privacy-policy
+  <p>
+  Privacy Policy:{" "}
+  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+    View Privacy Policy
+  </a>
 
-    <br />
+  <br />
 
-    Terms & Conditions:
-    https://baruch-ermi.org/terms
-  </label>
-</div>
+  Terms & Conditions:{" "}
+  <a href="/terms" target="_blank" rel="noopener noreferrer">
+    View Terms & Conditions
+  </a>
+</p>
 
             <button
               type="submit"
