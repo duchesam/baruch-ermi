@@ -126,29 +126,30 @@ export default function GetOffer() {
 
             <div style={{ marginBottom: "20px" }}>
   <label>
-    <input type="checkbox" name="SMS Consent" />{" "}
+    <input
+      type="checkbox"
+      name="SMS Consent"
+      value="Yes"
+    />{" "}
     By checking this box and voluntarily providing your phone number, you agree
-    to receive SMS messages from Baruch-Ermi LLC regarding your inquiry,
-    responses to your inquiry, appointment reminders, transaction updates, and customer support communications. Message
-    frequency may vary. Message and data rates may apply. Reply STOP to
-    unsubscribe. Reply HELP for assistance. Consent is not a condition of
-    purchase.
+    to receive transactional SMS messages from Baruch-Ermi LLC regarding your
+    inquiry, appointment scheduling, and transaction updates. Message frequency
+    may vary. Message and data rates may apply. Reply STOP to unsubscribe. Reply
+    HELP for assistance. Consent is not a condition of purchase.
+  </label>
 
-    <br /><br />
-
-  <p>
-  Privacy Policy:{" "}
-  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
-    View Privacy Policy
-  </a>
-
-  <br />
-
-  Terms & Conditions:{" "}
-  <a href="/terms" target="_blank" rel="noopener noreferrer">
-    View Terms & Conditions
-  </a>
-</p>
+  <p style={{ marginTop: "12px" }}>
+    Privacy Policy:{" "}
+    <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
+      View Privacy Policy
+    </a>
+    <br />
+    Terms &amp; Conditions:{" "}
+    <a href="/terms" target="_blank" rel="noopener noreferrer">
+      View Terms &amp; Conditions
+    </a>
+  </p>
+</div>
 
             <button
               type="submit"
