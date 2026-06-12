@@ -23,10 +23,15 @@ export default function GetOffer() {
           </p>
 
           <form
-            action="https://formspree.io/f/xdajryqo"
-            method="POST"
-          >
-            <div style={{ marginBottom: "15px" }}>
+  action="https://formspree.io/f/xdajryqo"
+  method="POST"
+>
+  <input
+    type="hidden"
+    name="_redirect"
+    value="https://baruch-ermi.org/thank-you"
+  />
+  <div style={{ marginBottom: "15px" }}>
               <label>Full Name *</label>
               <input
                 type="text"
