@@ -27,10 +27,10 @@ export default function GetOffer() {
   method="POST"
 >
   <input
-    type="hidden"
-    name="_redirect"
-    value="https://baruch-ermi.org/thank-you"
-  />
+  type="hidden"
+  name="_next"
+  value="https://baruch-ermi.org/thank-you"
+/>
   <div style={{ marginBottom: "15px" }}>
               <label>Full Name *</label>
               <input
