@@ -8,51 +8,78 @@ export default function AgentPartner() {
 
       <main className="section">
         <div className="container card" style={{ maxWidth: "950px", margin: "0 auto", padding: "40px" }}>
-          <h1>Agent Partner Program</h1>
+          <h1>Have a Listing That Won’t Sell?</h1>
 
           <p className="small">
             Baruch-Ermi LLC partners with real estate agents to help solve difficult property situations
-            using creative finance options such as seller financing, subject-to, lease option, and structured purchase terms.
+            through creative finance options such as seller financing, subject-to, lease options, and structured purchase terms.
           </p>
 
-          <h2>Have a Listing That Is Hard to Sell?</h2>
-          <p>
-            If your seller has a property that has been sitting on the market, needs a faster solution,
-            has limited equity, or wants a flexible sale structure, we may be able to help.
-          </p>
+          <h2>Submit a Property for Review</h2>
 
-          <h2>Creative Options We Can Discuss</h2>
-          <ul>
-            <li>Seller financing</li>
-            <li>Subject-to existing mortgage</li>
-            <li>Lease option</li>
-            <li>Wraparound structure where appropriate</li>
-            <li>Cash offer when the numbers make sense</li>
-          </ul>
+          <form action="https://formspree.io/f/xlgkylpl" method="POST">
+            <h3>Agent Information</h3>
 
-          <h2>Why Agents Work With Us</h2>
-          <ul>
-            <li>We respond quickly</li>
-            <li>We respect the agent relationship</li>
-            <li>We look for solutions that help the seller move forward</li>
-            <li>We do not ask agents to work for free</li>
-            <li>We handle conversations professionally and transparently</li>
-          </ul>
+            <label>Agent Name *</label>
+            <input type="text" name="Agent Name" required />
 
-          <h2>Submit a Property</h2>
-          <p>
-            If you have a seller who may be open to creative terms, contact us with the property address,
-            asking price, mortgage balance if known, monthly payment if known, and seller motivation.
-          </p>
+            <label>Brokerage *</label>
+            <input type="text" name="Brokerage" required />
 
-          <p>
-            Call: <a href="tel:+18335233104">(833) 523-3104</a><br />
-            Email: <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>
-          </p>
+            <label>Phone Number *</label>
+            <input type="tel" name="Phone Number" required />
 
-          <a href="/contact" className="btn">
-            Contact Us
-          </a>
+            <label>Email Address *</label>
+            <input type="email" name="Email Address" required />
+
+            <h3>Property Information</h3>
+
+            <label>Property Address *</label>
+            <input type="text" name="Property Address" required />
+
+            <label>Seller Asking Price</label>
+            <input type="text" name="Asking Price" placeholder="$" />
+
+            <label>Mortgage Balance</label>
+            <input type="text" name="Mortgage Balance" placeholder="$" />
+
+            <label>Monthly Mortgage Payment</label>
+            <input type="text" name="Monthly Payment" placeholder="$" />
+
+            <label>Occupancy</label>
+            <select name="Occupancy">
+              <option value="">Select One</option>
+              <option>Owner Occupied</option>
+              <option>Tenant Occupied</option>
+              <option>Vacant</option>
+              <option>Unknown</option>
+            </select>
+
+            <label>Seller Situation</label>
+            <select name="Seller Situation">
+              <option value="">Select One</option>
+              <option>Foreclosure</option>
+              <option>Pre-Foreclosure</option>
+              <option>Expired Listing</option>
+              <option>Tired Landlord</option>
+              <option>Inherited Property</option>
+              <option>Low Equity</option>
+              <option>Vacant Property</option>
+              <option>Needs Creative Terms</option>
+              <option>Other</option>
+            </select>
+
+            <label>Additional Notes</label>
+            <textarea name="Notes" rows="5"></textarea>
+
+            <p className="small" style={{ marginTop: "20px" }}>
+              By submitting this form, you agree that Baruch-Ermi LLC may contact you regarding this property submission.
+            </p>
+
+            <button type="submit" className="btn" style={{ width: "100%", marginTop: "20px" }}>
+              Submit Property
+            </button>
+          </form>
 
           <p className="small" style={{ marginTop: "30px" }}>
             Baruch-Ermi LLC is not a brokerage and does not provide legal, tax, or financial advice.
