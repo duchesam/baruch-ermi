@@ -20,7 +20,9 @@ export default function Home(){
           <p>Real options when you need them most. We help homeowners across the U.S. avoid foreclosure, stop auctions, and move forward.</p>
           <div className="actions">
             <a className="btn" href="/get-offer">Get a Cash Offer</a>
-            <Link className="btn btn--ghost" href="/options">Explore Options</Link>
+            <a href="/agent-partner" className="btn ghost">
+              Agent Partner Program
+            </a>
           </div>
           <div className="pills">
             <span className="pill">Fast decisions</span>
