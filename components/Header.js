@@ -15,6 +15,7 @@ export default function Header() {
           <Link href="/services">Services</Link>
           <Link href="/faq">FAQ</Link>
           <Link href="/contact">Contact</Link>
+          <Link href="/team-portal">Team Portal</Link>
         </nav>
 
         <a className="btn phonebtn" href="tel:18335233104">
@@ -54,7 +55,7 @@ export default function Header() {
           justify-self: center;
           display: flex;
           align-items: center;
-          gap: 38px;
+          gap: 24px;
         }
 
         .navlinks a {
@@ -73,7 +74,7 @@ export default function Header() {
           white-space: nowrap;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1150px) {
           .navwrap {
             grid-template-columns: 1fr;
             gap: 14px;
@@ -95,3 +96,4 @@ export default function Header() {
     </header>
   );
 }
+
