@@ -1,19 +1,2 @@
-export default function Footer() {
-  return (
-    <footer className="footer">
-      <div className="container inner small">
-        <div>
-          © {new Date().getFullYear()} Baruch-Ermi. All rights reserved.
-        </div>
-
-        <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="/terms">Terms & Conditions</a>
-          <a href="/faq">FAQ</a>
-          <a href="/contact">Contact</a>
-          <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
+import Link from 'next/link';
+export default function Footer(){return <footer className="site-footer"><div className="wrap footer-top"><div><Link href="/" className="footer-brand">BARUCH–ERMI</Link><p>Local perspective.<br/>Thoughtful property decisions.</p><span className="eyebrow">TAMPA BAY, FLORIDA</span></div><div><h2>Explore</h2><Link href="/sell-your-property">Sell your property</Link><Link href="/investors">Investor relationships</Link><Link href="/agent-partners">Agent opportunities</Link><Link href="/portal">Company workspace ↗</Link></div><div><h2>Start a conversation</h2><a href="tel:18335233104">(833) 523-3104</a><a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a><Link href="/contact">Send an inquiry</Link></div></div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} Baruch-Ermi LLC.</span><div><Link href="/privacy-policy">Privacy</Link><Link href="/terms">Terms</Link></div></div></footer>;}

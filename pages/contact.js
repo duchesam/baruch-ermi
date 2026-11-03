@@ -1,20 +1,2 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
-export default function Contact(){
-  return (
-    <>
-      <Header />
-      <main className="section">
-        <div className="container card" style={{maxWidth:"900px"}}>
-          <h1>Contact</h1>
-          <p>We move fast and keep things simple.</p>
-          <p><strong>Phone:</strong> <a href="tel:+18335233104">(833) 523-3104</a></p>
-          <p><strong>Email:</strong> <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a></p>
-          <p className="small">Baruch-Ermi — Nationwide foreclosure & auction solutions.</p>
-        </div>
-      </main>
-      <Footer />
-    </>
-  );
-}
+import Layout from '../components/Layout';import InquiryForm from '../components/InquiryForm';
+export default function Contact(){return <Layout title="Contact" path="/contact"><section className="page-intro"><div className="wrap"><span className="eyebrow">LET’S TALK</span><h1>A good next step<br/><em>starts here.</em></h1><p>Tell us what you have in mind. A property, a partnership, or a question—we’re ready to hear the details.</p></div></section><section className="section"><div className="wrap content-grid"><div><h2>Connect with Baruch-Ermi.</h2><p>Tampa Bay, Florida</p><p><a href="tel:18335233104">(833) 523-3104</a><br/><a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a></p><p>For a property evaluation, use our <a className="text-link" href="/sell-your-property">property review form</a>. Investors and agents can use their dedicated inquiry pages.</p></div><div className="form-panel"><h2>How can we help?</h2><InquiryForm kind="general" button="Send an Inquiry"/></div></div></section></Layout>;}

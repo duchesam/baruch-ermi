@@ -1,16 +1,32 @@
 {
-  "name": "barokgroup-new",
-  "version": "1.0.0",
+  "name": "baruch-ermi",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && next export",
-    "start": "npx serve out"
+    "dev": "node scripts/dev.mjs",
+    "build": "next build --webpack",
+    "start": "next start --hostname 0.0.0.0",
+    "test": "node --test tests/*.test.mjs",
+    "setup:local": "node scripts/setup-local.mjs"
   },
   "dependencies": {
-    "next": "13.5.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "next": "^16.0.0",
+    "react": "^19.0.1",
+    "react-dom": "^19.0.1",
+    "better-auth": "^1.7.0",
+    "better-sqlite3": "^12.0.0",
+    "pg": "^8.16.0",
+    "lucide-react": "^0.546.0",
+    "@tailwindcss/postcss": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "@types/react": "^19.3.0",
+    "@types/node": "^22.14.0",
+    "@types/pg": "^8.15.0",
+    "@types/better-sqlite3": "^7.6.0",
+    "@types/react-dom": "^19.3.0"
   }
 }

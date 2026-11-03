@@ -1,6 +1,1 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: 'export',
-  reactStrictMode: true
-};
-export default nextConfig;
+export default { reactStrictMode: true, outputFileTracingIncludes: {"/lead-desk": ["./vendor/lead/index.html"]}, serverExternalPackages: ["better-sqlite3", "pg"], async redirects() { return [{source:"/get-offer",destination:"/sell-your-property",permanent:true},{source:"/agent-partner",destination:"/agent-partners",permanent:true},{source:"/team-portal",destination:"/portal",permanent:true}]; }, async headers(){return [{source:"/:path*",headers:[{key:"X-Content-Type-Options",value:"nosniff"},{key:"Referrer-Policy",value:"strict-origin-when-cross-origin"},{key:"X-Frame-Options",value:"DENY"}]}];}};
