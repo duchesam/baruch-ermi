@@ -1,18 +1,14 @@
 # Real Estate Automation catalog — November 4, 2026
 
-## Products approved for this phase
+## Service catalog
 
-A. Lead Desk CRM with Probate Case Manager included.
-B. Creative Financing Analyzer.
-C. Seller Inquiry Automation.
-
-Real Estate AI Receptionist is labeled as a future roadmap product and is not offered for checkout. No AstraFlow product, branding, or connection is included.
+All twelve requested services appear on the same searchable catalog page, with their intended clients and individual service scope pages. All twelve can be selected in the proposal form. Lead Management CRM, Creative Financing Analyzer, and Seller Inquiry & Qualification System have standalone fictional demos. Probate Case Manager links to the probate workflow in the Lead Desk demo and can be scoped as a module or separate implementation. The remaining eight services are labeled Custom implementation and available for scoping; no working demo is claimed for them. No AstraFlow product, branding, or connection is included.
 
 ## Routes and buyer journey
 
-- `/automations`: three-system catalog, delivery models, and scoping process.
-- `/automations/lead-desk`, `/automations/creative-financing`, `/automations/seller-inquiry`: features, implementation deliverables, requirements, boundaries, and proposal links.
-- Matching `/demos/[system]`: public interactive demonstrations using fictional page-local data only.
+- `/automations`: twelve-service catalog, delivery models, and scoping process.
+- Twelve `/automations/[system]` detail pages: features, implementation deliverables, requirements, boundaries, and proposal links.
+- Three `/demos/[system]` routes: public interactive demonstrations using fictional page-local data only.
 - `/contact?system=<approved-slug>&interest=implementation|managed`: product-aware proposal request, with a choice of one-time implementation, managed subscription proposal, or undecided.
 
 Product identifiers and delivery model names are allowlisted server-side. Automation inquiries have their own type and retain source, product, delivery preference and independent consent choices. Retry deduplication includes the selected product and model, so different requests are not collapsed. Automation inquiries are not converted into property leads. The owner portal can filter them by type.
@@ -31,7 +27,7 @@ No price is invented or displayed. No checkout, recurring billing, paid service,
 
 ## Verification and remaining configuration
 
-Production build and TypeScript checks pass with all seven new routes generated. Fourteen backend/calculator integration tests pass, including new product/model persistence, source retention, retry dedupe, distinct product requests, no property-lead pollution, and invalid selection rejection. The 39 original Lead Desk tests remain unchanged from the audited baseline. Browser interaction, responsive visuals and keyboard review remain pending; the review preview has Vercel Authentication.
+Production build and TypeScript checks pass with all twelve service detail pages and exactly three demo routes generated. Fifteen backend/calculator integration tests pass, including new product/model persistence, source retention, retry dedupe, distinct product requests, no property-lead pollution, invalid selection rejection, and successful selection/persistence of every advertised service. The 39 original Lead Desk tests remain unchanged from the audited baseline. Browser interaction, responsive visuals and keyboard review remain pending; the review preview has Vercel Authentication.
 
 Proposal capture uses the existing company API and therefore needs the isolated PostgreSQL/auth setup already documented in UNIFIED_REBRAND_REVIEW.md. Until configured, the preview returns a truthful configuration error instead of claiming that a proposal was saved. Direct company phone/email remain visible. No real inquiry submissions were sent during tests; all database tests used disposable local SQLite and fictional fixtures.
 
