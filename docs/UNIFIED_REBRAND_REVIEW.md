@@ -12,7 +12,7 @@ Prepared November 3, 2026. No production deployment, live database mutation, DNS
 
 ## Public website
 
-Restrained navy, ivory and gold visual system; original architectural illustration (not a real listing or borrowed property photograph); responsive navigation; seller, investor and agent journeys; local-market copy; contact, about, options, FAQ and privacy/terms pages. No fabricated testimonials, results, biographies, listings or promised returns. Contact phone/email preserved from existing source.
+Updated white, charcoal and cobalt visual system; wide AI-generated illustrative Florida property hero; responsive navigation; seller, investor and agent journeys; local-market copy; contact, about, options, FAQ and privacy/terms pages. No fabricated testimonials, results, biographies, listings or promised returns. Contact phone/email preserved from existing source.
 
 Public routes: `/`, `/sell-your-property`, `/investors`, `/agent-partners`, `/about`, `/contact`, `/options`, `/services`, `/faq`, `/privacy-policy`, `/terms`.
 
@@ -68,3 +68,9 @@ Do not reuse production credentials or production data.
 ## Rollback
 
 Re-promote the recorded prior company deployment and preserve the new database intact. Export inquiries/scenarios received after cutover before any rollback; the old static site cannot display them. Do not restore an old database over newly captured records. Re-enable the old website forms only through its previous deployment; no automatic outreach is activated. Original Lead Desk browser records remain available at their original origin throughout.
+
+## Visual revision — November 4, 2026
+
+Replaced the earlier navy/ivory/gold design with white, cool-gray, charcoal and cobalt. Rebuilt the homepage around a wide property hero, practical visitor entry points, distinct audience cards, an illustrative regional graphic, a three-step process, and a connected company workspace section. The header now exposes company workspace access directly. Detail pages and Lead Desk receive the same revised visual palette. Existing integrated routes and all backend logic are unchanged.
+
+Hero generation brief: a realistic Florida single-family home with white stucco, charcoal roof, black window frames, tropical landscaping and bright natural light, wide editorial composition with space for copy, no people, cars, text, logos or signage. Generated using the built-in image tool; optimized to WebP for the website. The image is fictional and labeled accordingly.
