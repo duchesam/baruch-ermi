@@ -59,3 +59,22 @@ test('Operations is owner-only, origin-protected and links stable records withou
  assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:'Fixture withdrew'})).status,200);
  const lost=(await call(ops,'GET')).data.workspace;assert.equal(operationsReport(lost).closedVolume,0);assert.equal(lost.opportunities[0].closedAt,'');
 });
+
+test('complete company backup is owner-only and preserves linked records, scenarios and Operations without credentials',async()=>{
+ const {default:backup}=await import('../pages/api/backup.js');
+ assert.equal((await call(backup,'GET',null,{authorized:false})).status,401);
+ const r=await call(backup,'GET');assert.equal(r.status,200,JSON.stringify(r));
+ assert.equal(r.headers['Cache-Control'],'private, no-store');assert.ok(r.headers['Content-Disposition'].includes('attachment'));
+ const {checksum,...payload}=r.data;const {counts}=payload;
+ const {backupChecksum,inspectLeadBackup}=await import('../lib/company-backup.mjs');
+ assert.equal(checksum,backupChecksum(payload));const backupFile=path.join(dir,'company-backup.json');fs.writeFileSync(backupFile,JSON.stringify(r.data));const {execFileSync}=await import('node:child_process');const verified=JSON.parse(execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{encoding:'utf8'}));assert.equal(verified.integrity,'verified');fs.writeFileSync(backupFile,JSON.stringify({...r.data,counts:{properties:999}}));assert.throws(()=>execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{stdio:'pipe'}));fs.unlinkSync(backupFile);assert.equal(counts.properties,1);assert.equal(counts.scenarios,2);assert.equal(counts.opportunities,1);
+ assert.deepEqual(payload.workspace,(await call(workspace,'GET')).data);
+ assert.equal(payload.scenarios[0].property_id,propertyId);assert.ok(payload.inquiries.some(i=>i.data.consent&&i.data.source));
+ assert.ok(!JSON.stringify(payload).includes(process.env.BETTER_AUTH_SECRET));assert.ok(!Object.hasOwn(payload,'users'));assert.ok(!Object.hasOwn(payload,'sessions'));
+ const {mergeBackup,backupWorkspace}=await import('../public/lead-assets/workspace-core.mjs');
+ const empty={version:4,records:[],cases:[],history:[],outreachSettings:{}};
+ const restored=mergeBackup(empty,backupWorkspace(payload.workspace)).workspace;
+ assert.deepEqual(restored.records,payload.workspace.records);for(const c of payload.workspace.cases){const copy=restored.cases.find(x=>x.id===c.id);assert.ok(copy);const {activity,...fields}=c;const {activity:restoredActivity,...restoredFields}=copy;assert.deepEqual(restoredFields,fields);for(const event of activity)assert.ok(restoredActivity.some(a=>JSON.stringify(a)===JSON.stringify(event)));}
+ assert.equal(inspectLeadBackup(restored).properties,counts.properties);
+ assert.equal((await call(backup,'POST',{})).status,405);
+});

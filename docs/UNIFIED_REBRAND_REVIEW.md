@@ -74,3 +74,6 @@ Re-promote the recorded prior company deployment and preserve the new database i
 Replaced the earlier navy/ivory/gold design with white, cool-gray, charcoal and cobalt. Rebuilt the homepage around a wide property hero, practical visitor entry points, distinct audience cards, an illustrative regional graphic, a three-step process, and a connected company workspace section. The header now exposes company workspace access directly. Detail pages and Lead Desk receive the same revised visual palette. Existing integrated routes and all backend logic are unchanged.
 
 Hero generation brief: a realistic Florida single-family home with white stucco, charcoal roof, black window frames, tropical landscaping and bright natural light, wide editorial composition with space for copy, no people, cars, text, logos or signage. Generated using the built-in image tool; optimized to WebP for the website. The image is fictional and labeled accordingly.
+
+
+Launch preparation update: see LAUNCH_READINESS.md for verified account blockers, full-company backups and exact database fingerprint requirements added on November 5, 2026. Earlier migration command examples also require MIGRATION_DATABASE_SHA256.

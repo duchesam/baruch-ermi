@@ -29,3 +29,6 @@ Rollback: redeploy the previous review commit. Retain crm_operations and its bac
 ## Verification
 
 19 automated tests pass: existing auth/CRM/probate/scenario/calculator/inquiry tests plus authenticated Operations persistence/reload, anonymous denial, cross-origin rejection, stale revision conflict, retry idempotency, duplicate/missing source rejection, stage gates and evidence requirements, invalid dates/amounts, closed volume, response timestamp retention, completed tasks, lost reason and CSV formula escaping. Fixtures use a disposable SQLite database; hosted PostgreSQL/browser E2E remain separate checks. The 39 original Lead Desk regression tests also pass. Production build checks all routes. See final handoff for preview availability and browser verification limits.
+
+
+Launch preparation update: see LAUNCH_READINESS.md for verified account blockers, full-company backups and exact database fingerprint requirements added on November 5, 2026. Earlier migration command examples also require MIGRATION_DATABASE_SHA256.
