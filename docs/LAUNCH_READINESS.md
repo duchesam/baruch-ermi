@@ -4,7 +4,7 @@
 
 The unified review branch is implemented, but it is not approved or verified for production cutover. No production deployment, domain change, service purchase, outreach or live migration has occurred.
 
-## Confirmed account and environment
+## Historical environment audit before Neon authorization
 
 - Vercel team: ermias-seyoums-projects, project baruch-ermi (prj_I0aRfJ08Wbm5sLvcFLqy0jlGN0zj).
 - Canonical project domain: baruch-ermi.org.
@@ -38,7 +38,7 @@ An existing browser backup must be obtained before moving those records. The ori
 5. Run `node scripts/inspect-lead-backup.mjs <original-v4-backup.json>` before an approved import. Keep original bytes untouched. Merge only through the authenticated additive restore workflow and compare record/case/source/suppression/history counts afterward; preserve conflict recovery copies.
 6. Download the new full company backup; verify with `node scripts/verify-company-backup.mjs <company-backup.json>`. It is a private archive, not a public repository artifact or an automatic full-company restore endpoint.
 
-## Remaining launch gates
+## Remaining launch gates (updated below after Neon authorization)
 
 - Hosted isolated PostgreSQL provisioning, migrations, owner setup and persistence/reload testing.
 - Original browser backup availability, approved migration and before/after comparison.
@@ -53,3 +53,8 @@ Current production deployment remains dpl_2AR1Npa7bPUxFqqmQRCA8SNjxznK, source m
 ## Verification evidence for this pass
 
 22 application/domain/API tests pass, including owner-only full backup export, stable snapshot content, checksum verification, tamper rejection, preserved property/case data during additive restore, and configuration/target-fingerprint guards. The production build passes on the prepared source. The original 39 Lead Desk tests passed earlier in the same review cycle and their source is unchanged. Hosted PostgreSQL and browser tests remain unverified; no test result is presented as proof of real-data migration.
+
+
+## Neon authorization completed — current status
+
+The earlier missing-integration/configuration findings are resolved for the isolated review branch: a Free-plan Neon project and empty schema are initialized, a verified preview owner account exists, a restricted runtime role is configured, and all five Preview variables are set. See NEON_PREVIEW_SETUP.md for IDs, generated SQL, verification evidence and credential-handling boundaries. Production variables are unchanged. Local application-to-database verification is blocked by DNS EAI_AGAIN; hosted browser/API persistence checks, secure owner credential handoff, actual Lead Desk backup migration and production approval remain open. No claim of complete launch readiness is made.
