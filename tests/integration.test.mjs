@@ -16,3 +16,46 @@ test('inquiry abuse limiter persists across handler calls',async()=>{const data=
 test('automation proposals preserve product, delivery model, source and independent consent',async()=>{const data={kind:'automation',name:'Fictional business',email:'systems@example.test',message:'Demo proposal fixture',startedAt:Date.now()-5000,requestedSystem:'lead-desk',deliveryPreference:'managed',smsConsent:false,marketingConsent:false};const first=await call(inquiries,'POST',data,{authorized:false});assert.equal(first.status,201,JSON.stringify(first));const retry=await call(inquiries,'POST',data,{authorized:false});assert.equal(retry.data.id,first.data.id);const second=await call(inquiries,'POST',{...data,requestedSystem:'creative-financing',deliveryPreference:'implementation'},{authorized:false});assert.equal(second.status,201);assert.notEqual(second.data.id,first.data.id);const all=(await call(inquiries,'GET')).data.filter(i=>i.kind==='automation');assert.equal(all.length,2);const lead=all.find(i=>i.data.requestedSystem==='lead-desk');assert.equal(lead.data.deliveryPreference,'managed');assert.equal(lead.data.source,'https://baruch-ermi.org/automations/lead-desk');assert.equal(lead.data.consent.sms,false);assert.equal(lead.data.consent.marketingSms,false);const w=(await call(workspace,'GET')).data;assert.equal(w.records.length,1,'automation inquiries must not become property leads');});
 test('unknown products and delivery models are rejected before saving',async()=>{const data={kind:'automation',name:'Fixture',email:'invalid-system@example.test',startedAt:Date.now()-5000,requestedSystem:'unknown',deliveryPreference:'managed'};assert.equal((await call(inquiries,'POST',data,{authorized:false})).status,400);assert.equal((await call(inquiries,'POST',{...data,requestedSystem:'lead-desk',deliveryPreference:'unknown'},{authorized:false})).status,400);});
 test('all twelve advertised services can be selected for an automation proposal',async()=>{const {AUTOMATIONS,DEMO_SYSTEMS}=await import('../data/automations.js');assert.equal(AUTOMATIONS.length,12);assert.equal(new Set(AUTOMATIONS.map(p=>p.slug)).size,12);assert.equal(DEMO_SYSTEMS.length,3);for(const [i,p] of AUTOMATIONS.entries()){const r=await call(inquiries,'POST',{kind:'automation',name:'Fictional service client',email:'service-'+i+'@example.test',startedAt:Date.now()-5000,requestedSystem:p.slug,deliveryPreference:'implementation'},{authorized:false});assert.equal(r.status,201,p.name+': '+JSON.stringify(r));}const rows=(await call(inquiries,'GET')).data;for(const p of AUTOMATIONS)assert.ok(rows.some(r=>r.kind==='automation'&&r.data.requestedSystem===p.slug),p.slug);});
+
+test('Operations is owner-only, origin-protected and links stable records without duplicating CRM data',async()=>{
+ const {default:ops}=await import('../pages/api/operations.js');
+ assert.equal((await call(ops,'GET',null,{authorized:false})).status,401);
+ assert.equal((await call(ops,'POST',{}, {origin:'https://evil.example'})).status,403);
+ let state=(await call(ops,'GET')).data;
+ assert.equal(state.workspace.revision,0);assert.ok(state.links.some(l=>l.id===propertyId));
+ const command={requestId:'create-op-1',type:'opportunity.create',payload:{linkType:'property',linkId:propertyId,responsible:'Fixture owner',nextAction:'Review title fixture',nextDate:'2026-11-06'}};
+ let saved=await call(ops,'POST',{revision:0,command});assert.equal(saved.status,200,JSON.stringify(saved));assert.equal(saved.data.workspace.opportunities.length,1);
+ const id=saved.data.workspace.opportunities[0].id;
+ const retry=await call(ops,'POST',{revision:0,command});assert.equal(retry.status,200);assert.equal(retry.data.workspace.opportunities.length,1);
+ assert.equal((await call(ops,'POST',{revision:0,command:{...command,requestId:'stale-1'}})).status,409);
+ let revision=saved.data.workspace.revision;
+ async function mutate(type,payload){const r=await call(ops,'POST',{revision,command:{type,payload,requestId:randomBytes(12).toString('hex')}});if(r.status===200)revision=r.data.workspace.revision;return r;}
+ assert.equal((await mutate('opportunity.create',command.payload)).status,400);
+ assert.equal((await mutate('opportunity.create',{linkType:'property',linkId:'missing'})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Under contract'})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,check:'ownership',checked:true,evidence:''})).status,400);
+ for(const check of ['ownership','title','numbers','contract'])assert.equal((await mutate('opportunity.update',{id,check,checked:true,evidence:'Fictional review evidence'})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Under contract'})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,check:'title',checked:false})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:200000})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,check:'closing',checked:true,evidence:'Fictional closing statement'})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:-1})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:200000})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,responded:true})).status,200);
+ const firstResponse=(await call(ops,'GET')).data.workspace.opportunities[0].firstResponseAt;
+ assert.equal((await mutate('opportunity.update',{id,responded:true})).status,200);
+ assert.equal((await call(ops,'GET')).data.workspace.opportunities[0].firstResponseAt,firstResponse);
+ assert.equal((await mutate('task.create',{opportunityId:id,title:'Fictional inspection',due:'2026-02-31'})).status,400);
+ const t=await mutate('task.create',{opportunityId:id,title:'Fictional inspection',due:'2026-01-01',responsible:'Fixture owner'});assert.equal(t.status,200);
+ const taskId=t.data.workspace.tasks[0].id;
+ assert.equal((await mutate('task.update',{id:taskId,status:'Done'})).status,200);
+ assert.equal((await mutate('note.add',{id,note:'Review note fixture'})).status,200);
+ const final=(await call(ops,'GET')).data.workspace;
+ assert.equal(final.tasks[0].status,'Done');assert.ok(final.activity.every(a=>a.actor==='owner@example.test'&&a.at));
+ assert.equal(final.opportunities[0].amount,200000);
+ const {operationsReport}=await import('../lib/operations-core.mjs');const report=operationsReport(final,'2026-11-05');assert.equal(report.closedVolume,200000);assert.equal(report.overdue,0);assert.equal(report.sources[0].closed,1);
+ assert.equal((await call(workspace,'GET')).data.records.length,1,'Operations must not duplicate or mutate CRM records');
+ assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:''})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:'Fixture withdrew'})).status,200);
+ const lost=(await call(ops,'GET')).data.workspace;assert.equal(operationsReport(lost).closedVolume,0);assert.equal(lost.opportunities[0].closedAt,'');
+});
