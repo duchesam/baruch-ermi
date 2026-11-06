@@ -20,15 +20,15 @@ export const PrintableDealSheet: React.FC<PrintableDealSheetProps> = ({
             Baruch-Ermi LLC
           </h1>
           <p className="text-sm font-semibold text-slate-600">
-            Real Estate Acquisitions &amp; Creative Financing Division
+            Property Acquisition &amp; Financing Analysis
           </p>
           <p className="text-xs text-slate-500 mt-1">
-            Email: {inputs.buyerEmail || 'acquisitions@baruch-ermi.com'} | Phone: {inputs.buyerPhone || '(555) 019-2831'}
+            Email: {inputs.buyerEmail || 'Not provided'} | Phone: {inputs.buyerPhone || 'Not provided'}
           </p>
         </div>
         <div className="text-right">
           <div className="text-xs font-bold uppercase tracking-widest text-slate-500">
-            Official Deal Term Sheet
+            Draft Financing Analysis
           </div>
           <div className="text-sm font-bold text-slate-900 mt-0.5">
             {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
@@ -39,6 +39,7 @@ export const PrintableDealSheet: React.FC<PrintableDealSheetProps> = ({
         </div>
       </div>
 
+      <p className="text-xs mb-4">Nonbinding analysis draft. Amounts are estimates based on supplied inputs, not verified values or an offer. Ownership, seller authority, title, and financing terms require independent review. Operating costs use a simplified allowance of 20% of rent.</p>
       {/* Target Property */}
       <div className="bg-slate-100 p-4 rounded-lg mb-6 border border-slate-300">
         <div className="text-xs font-bold uppercase tracking-wider text-slate-600">
