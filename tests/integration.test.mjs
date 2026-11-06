@@ -78,3 +78,14 @@ test('complete company backup is owner-only and preserves linked records, scenar
  assert.equal(inspectLeadBackup(restored).properties,counts.properties);
  assert.equal((await call(backup,'POST',{})).status,405);
 });
+
+test('case summaries persist through authorized workspace API without creating properties',async()=>{
+ const {parseProbateCSV,mergeCases}=await import('../public/lead-assets/probate-logic.mjs');
+ const parsed=parseProbateCSV('Case Number,Case Type,Decedent,Decedent Listed Address,Verification Status\n26-CP-999998,Formal Administration,Fictional Summary,Fictional address,NOT verified',{id:'summary-fixture',file:'summary.csv',importedAt:new Date().toISOString()});
+ const current=(await call(workspace,'GET')).data,propertyCount=current.records.length;
+ current.cases=mergeCases(current.cases,parsed.cases).cases;
+ const saved=await call(workspace,'PUT',{workspace:current,revision:current.revision});assert.equal(saved.status,200,JSON.stringify(saved));
+ const loaded=(await call(workspace,'GET')).data,c=loaded.cases.find(c=>c.caseNumber==='26-CP-999998');
+ assert.equal(c.summaries[0].raw.verificationstatus,'NOT verified');assert.equal(c.parties.length,0);assert.equal(loaded.records.length,propertyCount);
+ assert.equal(mergeCases(loaded.cases,parsed.cases).added,0);
+});
