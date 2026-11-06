@@ -1,0 +1,7 @@
+# Recovery verification — November 6, 2026
+
+Vercel deployment dpl_3Nj6s8usKnizMu7x45vQPSFuxCps for commit d9745a6e528c6a43a64869f21e35da6255ce3409 reports READY. An owner-authorized 23-hour preview-access link was created for testing. Browser confirmed the rendered company homepage. Clicking Lead Desk redirected an anonymous visitor to the company sign-in page; deployment access does not grant private CRM access. No additional Google sign-in attempt or handoff was requested.
+
+Backup inspection now explicitly counts summaryRows. Extended protected-API regression verifies summary source fields survive database persistence, full company export, checksum verification, restoration into an empty workspace and repeated restore without duplicate cases. All 30 tests pass with isolated fixtures. This is local API evidence, not hosted managed-auth persistence evidence. Existing test-fixture Better Auth schema/rate-limit diagnostics remain in test output.
+
+Open launch gates: authenticated hosted import/write/reload/property-to-financing/scenarios/backup/logout; mobile viewport and print validation; production Google OAuth configuration; recovery of any original browser-only notes/history; explicit owner approval before live data migration and production rollout. The recovered CSV covers 76 case summaries only and must not be represented as a full original workspace backup. No real records were imported into any hosted database during this pass. No production changes.

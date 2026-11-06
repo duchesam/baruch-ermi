@@ -88,4 +88,14 @@ test('case summaries persist through authorized workspace API without creating p
  const loaded=(await call(workspace,'GET')).data,c=loaded.cases.find(c=>c.caseNumber==='26-CP-999998');
  assert.equal(c.summaries[0].raw.verificationstatus,'NOT verified');assert.equal(c.parties.length,0);assert.equal(loaded.records.length,propertyCount);
  assert.equal(mergeCases(loaded.cases,parsed.cases).added,0);
+ const {default:backup}=await import('../pages/api/backup.js');
+ const exported=await call(backup,'GET');assert.equal(exported.status,200);
+ const {checksum,...payload}=exported.data;
+ const {backupChecksum,inspectLeadBackup}=await import('../lib/company-backup.mjs');
+ assert.equal(checksum,backupChecksum(payload));assert.equal(payload.counts.summaryRows,1);
+ const {mergeBackup,backupWorkspace}=await import('../public/lead-assets/workspace-core.mjs');
+ const restored=mergeBackup({version:4,records:[],cases:[],history:[],outreachSettings:{}},backupWorkspace(payload.workspace)).workspace;
+ assert.deepEqual(restored.cases.find(x=>x.id===c.id).summaries,c.summaries);
+ assert.equal(inspectLeadBackup(restored).summaryRows,1);
+ assert.equal(mergeBackup(restored,backupWorkspace(payload.workspace)).casesAdded,0);
 });
