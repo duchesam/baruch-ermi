@@ -162,7 +162,7 @@ export const PrintableDealSheet: React.FC<PrintableDealSheetProps> = ({
             </div>
           </div>
           <div className="p-2 bg-slate-50 rounded border border-slate-200">
-            <div className="text-[10px] text-slate-500 uppercase">3% Closing / Title</div>
+            <div className="text-[10px] text-slate-500 uppercase">{inputs.closingCostPercent ?? 3}% Closing / Title</div>
             <div className="text-sm font-bold font-mono text-slate-900">
               {formatCurrency(results.closingCosts)}
             </div>
