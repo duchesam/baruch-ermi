@@ -1,0 +1,7 @@
+# Authentication readiness verification — November 6, 2026
+
+The database readiness script previously queried legacy public auth tables even when managed Neon Auth was enabled. It now checks application tables only in managed mode and explicitly reports that authenticated browser verification is required. A legacy owner row cannot establish managed authentication readiness. The command continues to exit unsuccessfully until its owner verification gate is met; it is not a complete go-live certification.
+
+Validation: npm test passed all 26 tests, including managed identity enforcement, anonymous route/API denial, probate deduplication, scenario persistence, inquiries, Operations, backups and two new readiness regression tests. These use isolated fixtures and are not hosted private-browser verification. Initial local test execution required installing the synchronized @neon/auth dependency; after npm ci it passed. The fixture suite emits Better Auth schema/rate-limit diagnostics; a passing suite does not certify production configuration.
+
+The owner supplied a screenshot confirming successful access in their own browser. The separate test browser remains on Google's sign-in screen; no session tokens were copied or bypassed. Authenticated hosted flows, mobile and printing remain open. Original browser-local Lead Desk records still require a full backup before migration. No production, live database, outreach or paid-service changes occurred.

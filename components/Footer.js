@@ -1,19 +1,2 @@
-export default function Footer() {
-  return (
-    <footer className="footer">
-      <div className="container inner small">
-        <div>
-          © {new Date().getFullYear()} Baruch-Ermi. All rights reserved.
-        </div>
-
-        <div style={{ display: "flex", gap: "15px", flexWrap: "wrap" }}>
-          <a href="/privacy-policy">Privacy Policy</a>
-          <a href="/terms">Terms & Conditions</a>
-          <a href="/faq">FAQ</a>
-          <a href="/contact">Contact</a>
-          <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a>
-        </div>
-      </div>
-    </footer>
-  );
-}
+import Link from 'next/link';import {ArrowUpRight,Phone,Mail} from 'lucide-react';
+export default function Footer(){return <footer className="site-footer"><div className="wrap footer-top"><div><Link href="/" className="footer-brand">Baruch-Ermi</Link><p>Real estate is about what comes next.<br/>Let’s explore it together.</p><span className="footer-location">BARUCH-ERMI LLC · TAMPA BAY, FLORIDA</span></div><div><h2>Your next step</h2><Link href="/sell-your-property">For property owners <ArrowUpRight size={13}/></Link><Link href="/investors">For investors <ArrowUpRight size={13}/></Link><Link href="/agent-partners">For agents <ArrowUpRight size={13}/></Link><Link href="/automations">Automation systems <ArrowUpRight size={13}/></Link><Link href="/portal">Company workspace <ArrowUpRight size={13}/></Link></div><div><h2>Let’s connect</h2><a href="tel:18335233104"><Phone size={14}/>(833) 523-3104</a><a href="mailto:admin@baruchermi.org"><Mail size={14}/>admin@baruchermi.org</a><Link href="/contact">Start a conversation <ArrowUpRight size={13}/></Link></div></div><div className="wrap footer-bottom"><span>© {new Date().getFullYear()} Baruch-Ermi LLC. All rights reserved.</span><div><Link href="/privacy-policy">Privacy Policy</Link><Link href="/terms">Terms of Use</Link></div></div></footer>;}

@@ -1,20 +1,2 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
-export default function Contact(){
-  return (
-    <>
-      <Header />
-      <main className="section">
-        <div className="container card" style={{maxWidth:"900px"}}>
-          <h1>Contact</h1>
-          <p>We move fast and keep things simple.</p>
-          <p><strong>Phone:</strong> <a href="tel:+18335233104">(833) 523-3104</a></p>
-          <p><strong>Email:</strong> <a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a></p>
-          <p className="small">Baruch-Ermi — Nationwide foreclosure & auction solutions.</p>
-        </div>
-      </main>
-      <Footer />
-    </>
-  );
-}
+import Layout from '../components/Layout';import InquiryForm from '../components/InquiryForm';import {useRouter} from 'next/router';import {getAutomation} from '../data/automations';
+export default function Contact(){const router=useRouter();const system=typeof router.query.system==='string'?router.query.system:'';const interest=typeof router.query.interest==='string'?router.query.interest:'';const product=getAutomation(system);const automation=Boolean(product||['automation','managed','implementation'].includes(interest));const delivery=['managed','implementation'].includes(interest)?interest:'';return <Layout title={automation?'Automation Setup Inquiry':'Contact'} path="/contact"><section className="page-intro"><div className="wrap"><span className="eyebrow">{automation?'REAL ESTATE AUTOMATION · REQUEST A PROPOSAL':'LET’S TALK'}</span><h1>{automation?<>Let’s shape<br/><em>your next workflow.</em></>:<>A good next step<br/><em>starts here.</em></>}</h1><p>{automation?'Tell us about your business and the system you want to explore. We’ll define scope, delivery, support, and pricing before any commitment.':'Tell us what you have in mind. A property, a partnership, or a question—we’re ready to hear the details.'}</p></div></section><section className="section"><div className="wrap content-grid"><div><h2>{automation?'Start with your requirements.':'Connect with Baruch-Ermi.'}</h2>{automation&&<><p>{product?product.name:'Explore a real estate automation system'} · {delivery==='managed'?'Managed subscription proposal':delivery==='implementation'?'One-time implementation':'Delivery approach to be discussed'}</p><p>Share your current workflow, team needs, source data, and desired integrations. A proposal will define configuration, usage limits, support responsibilities, and acceptance checks.</p><p>This form requests a conversation. It does not purchase software, activate a subscription, or authorize payment.</p></>}<p>Tampa Bay, Florida</p><p><a href="tel:18335233104">(833) 523-3104</a><br/><a href="mailto:admin@baruchermi.org">admin@baruchermi.org</a></p>{!automation&&<p>For a property evaluation, use our <a className="text-link" href="/sell-your-property">property review form</a>. Investors and agents can use their dedicated inquiry pages.</p>}</div><div className="form-panel"><h2>{automation?'Tell us what you need.':'How can we help?'}</h2><InquiryForm key={system+'-'+interest} kind={automation?'automation':'general'} requestedSystem={product?.slug||''} deliveryPreference={delivery} button={automation?'Request an Automation Proposal':'Send an Inquiry'}/></div></div></section></Layout>;}

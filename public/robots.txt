@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /portal
+Disallow: /lead-desk
+Disallow: /creative-financing
+Disallow: /sign-in
+Disallow: /api/
+Sitemap: https://baruch-ermi.org/sitemap.xml

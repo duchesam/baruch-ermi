@@ -1,0 +1,101 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {randomBytes} from 'node:crypto';
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'baruch-review-'));process.env.LOCAL_DATABASE_PATH=path.join(dir,'test.sqlite');delete process.env.DATABASE_URL;delete process.env.VERCEL;process.env.OWNER_EMAIL='owner@example.test';process.env.BETTER_AUTH_SECRET=randomBytes(40).toString('hex');process.env.BETTER_AUTH_URL='http://localhost:3000';
+const {getAuth,requireOwner,protectPage}=await import('../lib/auth.mjs');const {initializeCRM}=await import('../lib/db.mjs');const {getMigrations}=await import('better-auth/db/migration');const auth=getAuth({bootstrap:true});await (await getMigrations(auth.options)).runMigrations();await initializeCRM();const password=randomBytes(20).toString('hex');await auth.api.signUpEmail({body:{email:process.env.OWNER_EMAIL,password,name:'Review Owner'}});const signed=await getAuth().api.signInEmail({body:{email:process.env.OWNER_EMAIL,password},asResponse:true});assert.equal(signed.status,200);const cookie=signed.headers.getSetCookie().map(c=>c.split(';')[0]).join('; ');
+const {default:inquiries}=await import('../pages/api/inquiries.js');const {default:workspace}=await import('../pages/api/workspace.js');const {default:scenarios}=await import('../pages/api/scenarios.js');const {default:estimates}=await import('../pages/api/property-estimates.js');
+async function call(handler,method,body,{authorized=true,origin='http://localhost:3000'}={}){let result={status:200,headers:{}};const req={method,body,headers:{host:'localhost:3000',origin,...(authorized?{cookie}:{})}};const res={setHeader(k,v){result.headers[k]=v;},status(n){result.status=n;return this;},json(data){result.data=data;return result;},end(){return result;}};await handler(req,res);return result;}
+let propertyId;
+test('private pages and all data APIs reject anonymous sessions',async()=>{for(const h of [workspace,inquiries,scenarios,estimates]){const r=await call(h,'GET',null,{authorized:false});assert.equal(r.status,401);}const r=await protectPage({req:{headers:{host:'localhost:3000'}},res:{setHeader(){}}});assert.equal(r.redirect.destination,'/sign-in');});
+test('public registration is disabled',async()=>{const response=await getAuth().handler(new Request('http://localhost:3000/api/auth/sign-up/email',{method:'POST',headers:{'Content-Type':'application/json',Origin:'http://localhost:3000'},body:JSON.stringify({email:'other@example.test',password:'not-a-real-password-123',name:'Other'})}));assert.ok(response.status>=400);});
+test('inquiry submission saves provenance and consent; duplicate retry links one property',async()=>{const data={kind:'seller',name:'Fictional review owner',email:'fixture@example.test',phone:'',address:'FICTIONAL PROPERTY — TEST ONLY',city:'Tampa',message:'Integration fixture',startedAt:Date.now()-5000,smsConsent:false,marketingConsent:false};const a=await call(inquiries,'POST',data,{authorized:false});assert.equal(a.status,201,JSON.stringify(a));const b=await call(inquiries,'POST',data,{authorized:false});assert.equal(b.data.id,a.data.id);const all=await call(inquiries,'GET');assert.equal(all.data.length,1);assert.equal(all.data[0].data.consent.marketingSms,false);assert.equal(all.data[0].data.source,'https://baruch-ermi.org/sell-your-property');const w=await call(workspace,'GET');assert.equal(w.data.records.length,1);propertyId=w.data.records[0].id;assert.equal(w.data.records[0].inquiryId,a.data.id);assert.equal(w.data.records[0].checks.ownership,false);});
+test('investor inquiries stay separate and create no property',async()=>{const r=await call(inquiries,'POST',{kind:'investor',name:'Fictional investor',email:'investor@example.test',message:'Fixture',startedAt:Date.now()-5000},{authorized:false});assert.equal(r.status,201);const w=await call(workspace,'GET');assert.equal(w.data.records.length,1);const i=await call(inquiries,'GET');assert.ok(i.data.some(v=>v.kind==='investor'));});
+test('origin protection, spam trap, invalid fields, and optional consent are enforced server-side',async()=>{const data={kind:'seller',name:'Fixture',email:'fixture@example.test',address:'Fixture',startedAt:Date.now()-5000};assert.equal((await call(inquiries,'POST',data,{authorized:false,origin:'https://evil.example'})).status,403);assert.equal((await call(inquiries,'POST',{...data,website:'bot'},{authorized:false})).status,400);assert.equal((await call(inquiries,'POST',{...data,email:'invalid'},{authorized:false})).status,400);assert.equal((await call(inquiries,'POST',{...data,smsConsent:true},{authorized:false})).status,400);});
+test('probate daily import is grouped and idempotent through protected shared workspace',async()=>{const {parseProbateCSV,mergeCases}=await import('../public/lead-assets/probate-logic.mjs');const parsed=parseProbateCSV('CaseNumber,PartyType,CaseTypeDescription,FirstName,LastName/CompanyName\n26-CP-1,Decedent,Formal Administration,Fictional,Person\n26-CP-1,Petitioner,Formal Administration,Fictional,Representative',{id:'review-source',file:'fixture.csv',importedAt:new Date().toISOString()});const current=(await call(workspace,'GET')).data;current.cases=mergeCases(current.cases,parsed.cases).cases;const saved=await call(workspace,'PUT',{workspace:current,revision:current.revision});assert.equal(saved.status,200,JSON.stringify(saved));const repeat=mergeCases(saved.data.cases,parsed.cases);assert.equal(repeat.added,0);assert.equal(repeat.cases[0].parties.length,2);const stale=await call(workspace,'PUT',{workspace:current,revision:current.revision});assert.equal(stale.status,409);});
+test('two scenarios save against stable property ID and reload unchanged; malformed amounts rejected',async()=>{const inputs={propertyAddress:'FICTIONAL PROPERTY — TEST ONLY',purchasePrice:200000,estimatedARV:250000,dealStructure:'Seller Financing',existingMortgageBalance:150000,monthlyPayment:1000,proposedDownPayment:20000,proposedTerms:'Fixture only',monthlyMarketRent:2000,estimatedRehab:5000,closingCostPercent:3,buyerEntity:'Baruch-Ermi LLC',buyerName:'',buyerPhone:'',buyerEmail:'',closingDays:21,inspectionPeriodDays:7};for(const name of ['Base scenario','Alternative'])assert.equal((await call(scenarios,'POST',{propertyId,name,inputs})).status,201);const saved=await call(scenarios,'GET');assert.equal(saved.data.length,2);assert.deepEqual(saved.data[0].inputs,inputs);assert.equal((await call(scenarios,'POST',{propertyId,name:'Bad',inputs:{...inputs,monthlyPayment:-10}})).status,400);assert.equal((await call(scenarios,'POST',{propertyId:'missing',name:'Bad',inputs})).status,400);});
+test('paid estimates remain disabled',async()=>{const r=await call(estimates,'POST',{address:'Fixture property'});assert.equal(r.status,503);});
+test('inquiry abuse limiter persists across handler calls',async()=>{const data={kind:'general',name:'Rate fixture',email:'rate@example.test',startedAt:Date.now()-5000};for(let i=0;i<5;i++)assert.equal((await call(inquiries,'POST',{...data,message:'Fixture '+i},{authorized:false})).status,201);assert.equal((await call(inquiries,'POST',data,{authorized:false})).status,429);});
+test('automation proposals preserve product, delivery model, source and independent consent',async()=>{const data={kind:'automation',name:'Fictional business',email:'systems@example.test',message:'Demo proposal fixture',startedAt:Date.now()-5000,requestedSystem:'lead-desk',deliveryPreference:'managed',smsConsent:false,marketingConsent:false};const first=await call(inquiries,'POST',data,{authorized:false});assert.equal(first.status,201,JSON.stringify(first));const retry=await call(inquiries,'POST',data,{authorized:false});assert.equal(retry.data.id,first.data.id);const second=await call(inquiries,'POST',{...data,requestedSystem:'creative-financing',deliveryPreference:'implementation'},{authorized:false});assert.equal(second.status,201);assert.notEqual(second.data.id,first.data.id);const all=(await call(inquiries,'GET')).data.filter(i=>i.kind==='automation');assert.equal(all.length,2);const lead=all.find(i=>i.data.requestedSystem==='lead-desk');assert.equal(lead.data.deliveryPreference,'managed');assert.equal(lead.data.source,'https://baruch-ermi.org/automations/lead-desk');assert.equal(lead.data.consent.sms,false);assert.equal(lead.data.consent.marketingSms,false);const w=(await call(workspace,'GET')).data;assert.equal(w.records.length,1,'automation inquiries must not become property leads');});
+test('unknown products and delivery models are rejected before saving',async()=>{const data={kind:'automation',name:'Fixture',email:'invalid-system@example.test',startedAt:Date.now()-5000,requestedSystem:'unknown',deliveryPreference:'managed'};assert.equal((await call(inquiries,'POST',data,{authorized:false})).status,400);assert.equal((await call(inquiries,'POST',{...data,requestedSystem:'lead-desk',deliveryPreference:'unknown'},{authorized:false})).status,400);});
+test('all twelve advertised services can be selected for an automation proposal',async()=>{const {AUTOMATIONS,DEMO_SYSTEMS}=await import('../data/automations.js');assert.equal(AUTOMATIONS.length,12);assert.equal(new Set(AUTOMATIONS.map(p=>p.slug)).size,12);assert.equal(DEMO_SYSTEMS.length,3);for(const [i,p] of AUTOMATIONS.entries()){const r=await call(inquiries,'POST',{kind:'automation',name:'Fictional service client',email:'service-'+i+'@example.test',startedAt:Date.now()-5000,requestedSystem:p.slug,deliveryPreference:'implementation'},{authorized:false});assert.equal(r.status,201,p.name+': '+JSON.stringify(r));}const rows=(await call(inquiries,'GET')).data;for(const p of AUTOMATIONS)assert.ok(rows.some(r=>r.kind==='automation'&&r.data.requestedSystem===p.slug),p.slug);});
+
+test('Operations is owner-only, origin-protected and links stable records without duplicating CRM data',async()=>{
+ const {default:ops}=await import('../pages/api/operations.js');
+ assert.equal((await call(ops,'GET',null,{authorized:false})).status,401);
+ assert.equal((await call(ops,'POST',{}, {origin:'https://evil.example'})).status,403);
+ let state=(await call(ops,'GET')).data;
+ assert.equal(state.workspace.revision,0);assert.ok(state.links.some(l=>l.id===propertyId));
+ const command={requestId:'create-op-1',type:'opportunity.create',payload:{linkType:'property',linkId:propertyId,responsible:'Fixture owner',nextAction:'Review title fixture',nextDate:'2026-11-06'}};
+ let saved=await call(ops,'POST',{revision:0,command});assert.equal(saved.status,200,JSON.stringify(saved));assert.equal(saved.data.workspace.opportunities.length,1);
+ const id=saved.data.workspace.opportunities[0].id;
+ const retry=await call(ops,'POST',{revision:0,command});assert.equal(retry.status,200);assert.equal(retry.data.workspace.opportunities.length,1);
+ assert.equal((await call(ops,'POST',{revision:0,command:{...command,requestId:'stale-1'}})).status,409);
+ let revision=saved.data.workspace.revision;
+ async function mutate(type,payload){const r=await call(ops,'POST',{revision,command:{type,payload,requestId:randomBytes(12).toString('hex')}});if(r.status===200)revision=r.data.workspace.revision;return r;}
+ assert.equal((await mutate('opportunity.create',command.payload)).status,400);
+ assert.equal((await mutate('opportunity.create',{linkType:'property',linkId:'missing'})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Under contract'})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,check:'ownership',checked:true,evidence:''})).status,400);
+ for(const check of ['ownership','title','numbers','contract'])assert.equal((await mutate('opportunity.update',{id,check,checked:true,evidence:'Fictional review evidence'})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Under contract'})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,check:'title',checked:false})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:200000})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,check:'closing',checked:true,evidence:'Fictional closing statement'})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:-1})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:200000})).status,200);
+ assert.equal((await mutate('opportunity.update',{id,responded:true})).status,200);
+ const firstResponse=(await call(ops,'GET')).data.workspace.opportunities[0].firstResponseAt;
+ assert.equal((await mutate('opportunity.update',{id,responded:true})).status,200);
+ assert.equal((await call(ops,'GET')).data.workspace.opportunities[0].firstResponseAt,firstResponse);
+ assert.equal((await mutate('task.create',{opportunityId:id,title:'Fictional inspection',due:'2026-02-31'})).status,400);
+ const t=await mutate('task.create',{opportunityId:id,title:'Fictional inspection',due:'2026-01-01',responsible:'Fixture owner'});assert.equal(t.status,200);
+ const taskId=t.data.workspace.tasks[0].id;
+ assert.equal((await mutate('task.update',{id:taskId,status:'Done'})).status,200);
+ assert.equal((await mutate('note.add',{id,note:'Review note fixture'})).status,200);
+ const final=(await call(ops,'GET')).data.workspace;
+ assert.equal(final.tasks[0].status,'Done');assert.ok(final.activity.every(a=>a.actor==='owner@example.test'&&a.at));
+ assert.equal(final.opportunities[0].amount,200000);
+ const {operationsReport}=await import('../lib/operations-core.mjs');const report=operationsReport(final,'2026-11-05');assert.equal(report.closedVolume,200000);assert.equal(report.overdue,0);assert.equal(report.sources[0].closed,1);
+ assert.equal((await call(workspace,'GET')).data.records.length,1,'Operations must not duplicate or mutate CRM records');
+ assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:''})).status,400);
+ assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:'Fixture withdrew'})).status,200);
+ const lost=(await call(ops,'GET')).data.workspace;assert.equal(operationsReport(lost).closedVolume,0);assert.equal(lost.opportunities[0].closedAt,'');
+});
+
+test('complete company backup is owner-only and preserves linked records, scenarios and Operations without credentials',async()=>{
+ const {default:backup}=await import('../pages/api/backup.js');
+ assert.equal((await call(backup,'GET',null,{authorized:false})).status,401);
+ const r=await call(backup,'GET');assert.equal(r.status,200,JSON.stringify(r));
+ assert.equal(r.headers['Cache-Control'],'private, no-store');assert.ok(r.headers['Content-Disposition'].includes('attachment'));
+ const {checksum,...payload}=r.data;const {counts}=payload;
+ const {backupChecksum,inspectLeadBackup}=await import('../lib/company-backup.mjs');
+ assert.equal(checksum,backupChecksum(payload));const backupFile=path.join(dir,'company-backup.json');fs.writeFileSync(backupFile,JSON.stringify(r.data));const {execFileSync}=await import('node:child_process');const verified=JSON.parse(execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{encoding:'utf8'}));assert.equal(verified.integrity,'verified');fs.writeFileSync(backupFile,JSON.stringify({...r.data,counts:{properties:999}}));assert.throws(()=>execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{stdio:'pipe'}));fs.unlinkSync(backupFile);assert.equal(counts.properties,1);assert.equal(counts.scenarios,2);assert.equal(counts.opportunities,1);
+ assert.deepEqual(payload.workspace,(await call(workspace,'GET')).data);
+ assert.equal(payload.scenarios[0].property_id,propertyId);assert.ok(payload.inquiries.some(i=>i.data.consent&&i.data.source));
+ assert.ok(!JSON.stringify(payload).includes(process.env.BETTER_AUTH_SECRET));assert.ok(!Object.hasOwn(payload,'users'));assert.ok(!Object.hasOwn(payload,'sessions'));
+ const {mergeBackup,backupWorkspace}=await import('../public/lead-assets/workspace-core.mjs');
+ const empty={version:4,records:[],cases:[],history:[],outreachSettings:{}};
+ const restored=mergeBackup(empty,backupWorkspace(payload.workspace)).workspace;
+ assert.deepEqual(restored.records,payload.workspace.records);for(const c of payload.workspace.cases){const copy=restored.cases.find(x=>x.id===c.id);assert.ok(copy);const {activity,...fields}=c;const {activity:restoredActivity,...restoredFields}=copy;assert.deepEqual(restoredFields,fields);for(const event of activity)assert.ok(restoredActivity.some(a=>JSON.stringify(a)===JSON.stringify(event)));}
+ assert.equal(inspectLeadBackup(restored).properties,counts.properties);
+ assert.equal((await call(backup,'POST',{})).status,405);
+});
+
+test('case summaries persist through authorized workspace API without creating properties',async()=>{
+ const {parseProbateCSV,mergeCases}=await import('../public/lead-assets/probate-logic.mjs');
+ const parsed=parseProbateCSV('Case Number,Case Type,Decedent,Decedent Listed Address,Verification Status\n26-CP-999998,Formal Administration,Fictional Summary,Fictional address,NOT verified',{id:'summary-fixture',file:'summary.csv',importedAt:new Date().toISOString()});
+ const current=(await call(workspace,'GET')).data,propertyCount=current.records.length;
+ current.cases=mergeCases(current.cases,parsed.cases).cases;
+ const saved=await call(workspace,'PUT',{workspace:current,revision:current.revision});assert.equal(saved.status,200,JSON.stringify(saved));
+ const loaded=(await call(workspace,'GET')).data,c=loaded.cases.find(c=>c.caseNumber==='26-CP-999998');
+ assert.equal(c.summaries[0].raw.verificationstatus,'NOT verified');assert.equal(c.parties.length,0);assert.equal(loaded.records.length,propertyCount);
+ assert.equal(mergeCases(loaded.cases,parsed.cases).added,0);
+ const {default:backup}=await import('../pages/api/backup.js');
+ const exported=await call(backup,'GET');assert.equal(exported.status,200);
+ const {checksum,...payload}=exported.data;
+ const {backupChecksum,inspectLeadBackup}=await import('../lib/company-backup.mjs');
+ assert.equal(checksum,backupChecksum(payload));assert.equal(payload.counts.summaryRows,1);
+ const {mergeBackup,backupWorkspace}=await import('../public/lead-assets/workspace-core.mjs');
+ const restored=mergeBackup({version:4,records:[],cases:[],history:[],outreachSettings:{}},backupWorkspace(payload.workspace)).workspace;
+ assert.deepEqual(restored.cases.find(x=>x.id===c.id).summaries,c.summaries);
+ assert.equal(inspectLeadBackup(restored).summaryRows,1);
+ assert.equal(mergeBackup(restored,backupWorkspace(payload.workspace)).casesAdded,0);
+});

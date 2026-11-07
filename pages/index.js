@@ -1,58 +1,26 @@
-import Head from "next/head";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-import Link from "next/link";
+import Layout from '../components/Layout';
+import Link from 'next/link';
+import Head from 'next/head';
+import {ArrowUpRight,ArrowRight,House,ChartNoAxesCombined,Handshake,MapPin,ShieldCheck,Layers3,FolderSearch,Calculator,Check} from 'lucide-react';
 
-export default function Home(){
-  return (
-    <>
-      <Head>
-        <title>Baruch-Ermi — Nationwide Foreclosure Help</title>
-        <meta name="description" content="Real options to stop auctions, avoid foreclosure, and move forward with clarity." />
-      </Head>
-      <Header />
-
-      {/* HERO with background image */}
-      <section className="hero">
-        <div className="hero__overlay" />
-        <div className="container hero__content">
-          <h1>Nationwide Foreclosure Help</h1>
-          <p>Real options when you need them most. We help homeowners across the U.S. avoid foreclosure, stop auctions, and move forward.</p>
-          <div className="actions">
-            <a className="btn" href="/get-offer">Get a Cash Offer</a>
-            <a href="/agent-partner" className="btn ghost">
-              Agent Partner Program
-            </a>
-          </div>
-          <div className="pills">
-            <span className="pill">Fast decisions</span>
-            <span className="pill">No commissions</span>
-            <span className="pill">Nationwide network</span>
-            <span className="pill">Transparent process</span>
-          </div>
-        </div>
-      </section>
-
-      <main className="section">
-        <div className="container">
-          <div className="grid grid-3" style={{gap:18}}>
-            <div className="card">
-              <h3>Stop the Clock</h3>
-              <p className="small">We coordinate payoff, reinstatement, postponements, and buyer docs—protecting your timeline.</p>
-            </div>
-            <div className="card">
-              <h3>Real Choices</h3>
-              <p className="small">Reinstate, modify, sell (cash or concierge), or creative options like subject-to—whichever fits best.</p>
-            </div>
-            <div className="card">
-              <h3>Clear Communication</h3>
-              <p className="small">Direct answers, no pressure, and updates you can trust.</p>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      <Footer />
-    </>
-  );
-}
+const journeys=[
+ {icon:House,label:'FOR PROPERTY OWNERS',title:'A simpler path to your next chapter.',body:'Inherited a property? Facing repairs? Ready for a change? Start with a conversation about your property and the options that fit.',tags:['As-is properties','Inherited homes','Flexible purchase options'],link:'/sell-your-property',action:'Request a property review',color:'blue'},
+ {icon:ChartNoAxesCombined,label:'FOR INVESTORS',title:'Good opportunities start with alignment.',body:'Connect around your investment focus, property criteria, and the fundamentals behind a considered acquisition.',tags:['Acquisitions','Renovations','Rental strategies'],link:'/investors',action:'Discuss a partnership',color:'teal'},
+ {icon:Handshake,label:'FOR REAL ESTATE AGENTS',title:'Bring the opportunity. Let’s find the fit.',body:'Have a property that needs a different approach? Share the details and explore a practical purchase conversation.',tags:['Property submissions','Creative terms','Agent relationships'],link:'/agent-partners',action:'Submit an opportunity',color:'violet'},
+];
+export default function Home(){return <Layout title="Property Solutions & Investment Relationships in Tampa Bay" path="/">
+ <Head><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Organization',name:'Baruch-Ermi LLC',url:'https://baruch-ermi.org/',telephone:'+1-833-523-3104',email:'admin@baruchermi.org',areaServed:['Tampa Bay','Hillsborough County','Riverview','Wimauma','Brandon','Wesley Chapel']})}}/></Head>
+ <section className="property-hero" aria-labelledby="hero-title">
+  <img className="hero-photo" src="/images/florida-home-v2.webp" alt="Illustrative Florida home with tropical landscaping" width="1673" height="940" fetchPriority="high"/>
+  <div className="hero-shade"/>
+  <div className="wrap hero-content"><div className="hero-location"><span/>PROPERTY SOLUTIONS. TAMPA BAY ROOTS.</div><h1 id="hero-title">Your property.<br/>Your next move.<br/><span>Let’s make it clear.</span></h1><p>We bring homeowners, investors, and agents together around practical real estate opportunities.</p><div className="hero-actions"><Link className="button button-primary" href="/sell-your-property">Request a Property Review <ArrowUpRight size={18}/></Link><Link className="button button-glass" href="/investors">Explore partnerships <ArrowRight size={18}/></Link></div><div className="hero-reassurance"><span><Check size={15}/>Personal conversation</span><span><Check size={15}/>No obligation to proceed</span></div></div>
+  <div className="image-disclosure">Illustrative image · not a property listing</div>
+ </section>
+ <section className="pathway-section"><div className="wrap pathway-bar"><div className="pathway-intro"><span className="eyebrow">START HERE</span><strong>What brings you to us?</strong></div>{[['I have a property','Let’s explore your options.','/sell-your-property',House],['I’m an investor','Let’s discuss your focus.','/investors',ChartNoAxesCombined],['I’m an agent','Let’s review an opportunity.','/agent-partners',Handshake]].map(([title,body,url,Icon])=><Link href={url} className="pathway" key={url}><Icon size={23} strokeWidth={1.5}/><span><strong>{title}</strong><small>{body}</small></span><ArrowUpRight size={17}/></Link>)}</div></section>
+ <section className="section audience-section" id="your-next-step"><div className="wrap"><div className="section-heading"><div><span className="eyebrow">REAL ESTATE, WITH A PERSONAL PERSPECTIVE</span><h2>Different goals.<br/><span>A clear place to begin.</span></h2></div><p>Every situation has its own details. We start by listening, look closely at the property, and discuss what makes sense next.</p></div><div className="journey-grid">{journeys.map(({icon:Icon,...j})=><article className={'journey-card '+j.color} key={j.link}><div className="journey-icon"><Icon size={27} strokeWidth={1.5}/></div><span className="eyebrow">{j.label}</span><h3>{j.title}</h3><p>{j.body}</p><div className="journey-tags">{j.tags.map(t=><span key={t}>{t}</span>)}</div><Link href={j.link}>{j.action}<ArrowUpRight size={18}/></Link></article>)}</div></div></section>
+ <section className="local-section"><div className="wrap local-grid"><div className="local-art" aria-hidden="true"><div className="map-grid"/><div className="map-circle c-one"/><div className="map-circle c-two"/><div className="map-route"/><span className="map-pin pin-tampa"><MapPin size={22}/>Tampa</span><span className="map-pin pin-brandon"><MapPin size={22}/>Brandon</span><span className="map-pin pin-riverview"><MapPin size={22}/>Riverview</span><span className="map-pin pin-wimauma"><MapPin size={22}/>Wimauma</span><div className="map-caption"><span className="live-dot"/>TAMPA BAY & SURROUNDING MARKETS</div></div><div className="local-copy"><span className="eyebrow">LOCAL KNOWLEDGE. THOUGHTFUL DECISIONS.</span><h2>Rooted here.<br/>Focused on <span>what’s next.</span></h2><p>Our focus is Tampa Bay and its surrounding communities. We consider the property, the neighborhood, and the goals behind each conversation.</p><div className="market-chips">{['Riverview','Wimauma','Brandon','Tampa','Wesley Chapel'].map(x=><span key={x}><MapPin size={12}/>{x}</span>)}</div><Link href="/about" className="text-link">Get to know Baruch-Ermi <ArrowUpRight size={17}/></Link><small className="map-note">Regional graphic is illustrative. Wesley Chapel is primarily in Pasco County.</small></div></div></section>
+ <section className="section process-section"><div className="wrap"><div className="section-heading"><div><span className="eyebrow">A PRACTICAL WAY FORWARD</span><h2>Less uncertainty.<br/><span>More understanding.</span></h2></div><Link href="/contact" className="text-link">Start a conversation <ArrowUpRight size={18}/></Link></div><div className="process-grid">{[[House,'01','Tell us the story.','Share the property, your priorities, and the timeline you have in mind.'],[FolderSearch,'02','Look at the details.','We consider condition, purchase terms, and the information that needs verification.'],[Handshake,'03','Discuss the next step.','Review a practical path forward, with room for questions and independent advice.']].map(([Icon,n,t,b])=><article className="process-card" key={n}><div><span>{n}</span><Icon size={24} strokeWidth={1.5}/></div><h3>{t}</h3><p>{b}</p></article>)}</div></div></section>
+ <section className="automation-home-callout"><div className="wrap"><div><span className="eyebrow">FOR REAL ESTATE BUSINESSES</span><h2>A better workflow<br/>starts with the right system.</h2><p>Choose from 12 real estate automation services. Explore the available demos, then discuss an implementation for your business.</p></div><Link className="button button-primary" href="/automations">Explore automation systems <ArrowUpRight size={18}/></Link></div></section>
+ <section className="platform-section"><div className="wrap platform-grid"><div><span className="eyebrow">THE COMPANY WORKSPACE</span><h2>One company.<br/><span>Connected tools.</span></h2><p>Authorized team access to property research, lead management, and financing analysis—all within the Baruch-Ermi website.</p><Link className="button button-primary" href="/portal">Open company workspace <ArrowUpRight size={18}/></Link><div className="platform-note"><ShieldCheck size={15}/>Company sign-in required</div></div><div className="platform-tools"><a href="/lead-desk" className="platform-tool"><span className="tool-symbol"><FolderSearch size={24}/></span><span><strong>Lead Desk</strong><small>Probate cases, property research & follow-ups</small></span><ArrowUpRight size={20}/></a><div className="platform-connector"><Layers3 size={14}/><span>One company workspace</span></div><a href="/creative-financing" className="platform-tool"><span className="tool-symbol"><Calculator size={24}/></span><span><strong>Creative Financing</strong><small>Purchase scenarios, cash flow & deal summaries</small></span><ArrowUpRight size={20}/></a></div></div></section>
+ <section className="contact-banner"><div className="wrap contact-banner-inner"><div><span className="eyebrow">YOUR NEXT CHAPTER CAN START WITH A CONVERSATION.</span><h2>Let’s talk about the possibilities.</h2></div><Link href="/contact" className="button button-white">Connect with our team <ArrowUpRight size={18}/></Link></div></section>
+ </Layout>;}
