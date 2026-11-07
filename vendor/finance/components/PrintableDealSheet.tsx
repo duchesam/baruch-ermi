@@ -92,9 +92,9 @@ export const PrintableDealSheet: React.FC<PrintableDealSheetProps> = ({
                 </td>
               </tr>
               <tr>
-                <td className="text-slate-600 py-1.5">Agreed Terms:</td>
+                <td className="text-slate-600 py-1.5">Proposed Terms:</td>
                 <td className="font-semibold text-slate-900 text-right text-[11px]">
-                  {inputs.proposedTerms || 'As agreed'}
+                  {inputs.proposedTerms.trim() || 'Not provided'}
                 </td>
               </tr>
             </tbody>
@@ -176,26 +176,10 @@ export const PrintableDealSheet: React.FC<PrintableDealSheetProps> = ({
         </div>
       </div>
 
-      {/* Terms & Closing Conditions */}
-      <div className="text-xs text-slate-600 space-y-1 mb-8">
-        <p>• <strong>Condition:</strong> Purchased 100% As-Is, with zero repair concessions requested.</p>
-        <p>• <strong>Inspection:</strong> {inputs.inspectionPeriodDays || 7} calendar days informational inspection period.</p>
-        <p>• <strong>Closing:</strong> Within {inputs.closingDays || 21} business days through a licensed Title &amp; Escrow company.</p>
-        <p>• <strong>Loan Servicing:</strong> Managed through a licensed national third-party servicing platform.</p>
-      </div>
-
-      {/* Signature Section */}
-      <div className="pt-6 border-t-2 border-slate-300 grid grid-cols-2 gap-8 text-xs">
-        <div>
-          <div className="border-b border-slate-400 pb-1 mb-1 font-semibold text-slate-900">
-            {inputs.buyerEntity || 'Baruch-Ermi LLC'}
-          </div>
-          <div className="text-slate-500">Authorized Buyer Signature &amp; Date</div>
-        </div>
-        <div>
-          <div className="border-b border-slate-400 pb-1 mb-1">&nbsp;</div>
-          <div className="text-slate-500">Property Owner / Seller Acceptance &amp; Date</div>
-        </div>
+      <div className="border-t border-slate-300 pt-4 text-xs text-slate-600 space-y-1">
+        <p><strong>Buyer entity:</strong> {inputs.buyerEntity || 'Not provided'}</p>
+        <p><strong>Proposed inspection period:</strong> {inputs.inspectionPeriodDays} calendar days</p>
+        <p><strong>Proposed closing timeline:</strong> {inputs.closingDays} business days</p>
       </div>
     </div>
   );
