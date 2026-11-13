@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {deriveLead,leadAutomationReport,scoreProbateCase,updateLeadReview} from '../lib/lead-automation-core.mjs';
+
+const property={id:'p1',parcel:'123',address:'101 Test Ave',checks:{ownership:true},signals:['Absentee owner','Tax certificate','Vacancy'],sources:[{name:'Property appraiser'}]};
+const probate={id:'case:26-cp-1',caseNumber:'26-CP-1',classification:'Estate',parties:[{name:'Sample Estate'}],sources:['Clerk filing'],links:[{propertyId:'p1'}],evidence:[{propertyId:'p1',kind:'Ownership',note:'Name matched'}]};
+
+test('scores only documented evidence',()=>{const result=scoreProbateCase(probate,[property],{representativeStatus:'verified'});assert.equal(result.score,90);assert.equal(result.rules.filter(rule=>rule.met).length,7);});
+test('unlinked probate case remains research required',()=>{const lead=deriveLead({...probate,links:[],evidence:[]},[property],{});assert.equal(lead.status,'Research required');assert.equal(lead.propertyId,'');});
+test('mail approval is blocked until every gate is complete',()=>{assert.throws(()=>updateLeadReview({},new Set([probate.id]),{caseId:probate.id,approveMail:true},{actor:'owner',at:'2026-11-13T12:00:00Z'}),/Complete representative/);});
+test('complete review can be approved without sending outreach',()=>{const next=updateLeadReview({},new Set([probate.id]),{caseId:probate.id,representativeStatus:'verified',mailingAddressStatus:'verified',dncNational:'clear',dncFlorida:'clear',contactSource:'verified public record',contactVerifiedAt:'2026-11-13',approveMail:true},{actor:'owner@example.com',at:'2026-11-13T12:00:00Z'});assert.equal(next.reviews[probate.id].mailApprovedBy,'owner@example.com');assert.equal(next.reviews[probate.id].mailApprovedAt,'2026-11-13T12:00:00Z');});
+test('do-not-contact response forces suppression',()=>{const next=updateLeadReview({},new Set([probate.id]),{caseId:probate.id,responseStatus:'do-not-contact'},{actor:'owner',at:'2026-11-13T12:00:00Z'});const report=leadAutomationReport([probate],[property],next);assert.equal(report.metrics.suppressed,1);assert.equal(report.leads[0].status,'Suppressed');});
