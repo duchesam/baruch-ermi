@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {refreshPreparedEvidence} from '../lib/property-evidence-refresh.mjs';
+
+const workspace={version:4,revision:17,savedAt:'',records:[{id:'county:012073.0175',parcel:'012073.0175',address:'101 TEST AVE',city:'TAMPA',owner:'SAMPLE OWNER',mail:'PO BOX 1',caseNumber:'26-CP-1',notes:'',followup:'',verifiedAt:'',checks:{ownership:false,authority:false,status:false,mail:false},signals:[],sources:[],stage:'Research'}],cases:[{id:'case:26-cp-1',caseNumber:'26-CP-1',classification:'Estate',status:'Property review',followup:'',notes:'',county:'Hillsborough',titles:[],types:[],filingDates:[],parties:[],sources:[],links:[{propertyId:'county:012073.0175',url:'',date:'',note:''}],evidence:[],activity:[]}],history:[],outreachSettings:{}};
+const fetcher=async()=>({ok:true,json:async()=>({features:[{attributes:{Acc_Folio:'012073.0175',OWNER:'SAMPLE OWNER',SITE_ADDR:'101 TEST AVE',SITE_CITY:'TAMPA',SITE_ZIP:'33601',ADDR_1:'PO BOX 1',ADDR_2:'',CITY:'TAMPA',STATE:'FL',ZIP:'33601',BLDG:'100',LAND:'50'}}]})});
+
+test('refreshes prepared county evidence without verifying ownership',async()=>{let saved;const result=await refreshPreparedEvidence({revision:17},'owner@example.com',{fetcher,read:async()=>structuredClone(workspace),write:async value=>(saved=structuredClone({...value,revision:18}))});assert.equal(result.refreshed,1);assert.equal(result.unchanged,0);assert.equal(saved.records[0].checks.ownership,false);assert.equal(saved.cases[0].evidence[0].kind,'County snapshot');assert.match(saved.cases[0].evidence[0].note,/does not prove estate authority/);});
