@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Baruch-Ermi">
+  <rect width="64" height="64" rx="16" fill="#2158e8"/>
+  <path d="M14 34V24L32 11l18 13v25H14V34m13 15V31h10v18M12 24h40" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+</svg>

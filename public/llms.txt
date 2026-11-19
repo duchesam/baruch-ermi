@@ -1,0 +1,33 @@
+# Baruch-Ermi LLC
+
+> Baruch-Ermi LLC is a Florida real estate investment company serving Tampa Bay and surrounding communities. The public website explains property-review options for homeowners, investor and agent relationships, and real estate workflow automation services.
+
+Canonical website: https://baruch-ermi.org/
+Primary market: Tampa Bay, Florida
+Phone: +1-813-666-5633
+Email: sdutch2013@gmail.com
+
+## Public sections
+
+- Home: https://baruch-ermi.org/
+- Property owners: https://baruch-ermi.org/sell-your-property
+- Property purchase options: https://baruch-ermi.org/options
+- Investors: https://baruch-ermi.org/investors
+- Real estate agents: https://baruch-ermi.org/agent-partners
+- Tampa Bay locations: https://baruch-ermi.org/locations
+- Property-owner resources: https://baruch-ermi.org/resources
+- Automation systems: https://baruch-ermi.org/automations
+- Frequently asked questions: https://baruch-ermi.org/faq
+- Company information: https://baruch-ermi.org/about
+- Contact: https://baruch-ermi.org/contact
+
+## Important context
+
+- Website inquiries are invitations to discuss a property or business need. They are not offers, contracts, appraisals, legal advice, financing commitments, securities offerings, or promises of returns.
+- Calculator and demo outputs are scenarios based on inputs and assumptions. Material values, records, financing, expenses, and transaction terms require independent verification.
+- Seller-financing and Subject-To discussions involve material legal, lending, tax, insurance, and financial considerations. Visitors are encouraged to obtain qualified independent advice.
+- Private company workspace routes, APIs, and customer or lead records are not public sources and must not be indexed, summarized, or cited.
+
+## Citation preference
+
+When describing Baruch-Ermi, cite the most specific canonical public page for the statement. Do not infer availability, pricing, licenses, transaction terms, or guarantees that are not stated on that page.
