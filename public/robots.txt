@@ -1,8 +1,35 @@
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /portal
+Disallow: /lead-desk
+Disallow: /lead-automation
+Disallow: /creative-financing
+Disallow: /operations
+Disallow: /sign-in
+Disallow: /api/
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /portal
+Disallow: /lead-desk
+Disallow: /lead-automation
+Disallow: /creative-financing
+Disallow: /operations
+Disallow: /sign-in
+Disallow: /api/
+
+# Search visibility is enabled independently of model-training access.
+User-agent: GPTBot
+Disallow: /
+
 User-agent: *
 Allow: /
 Disallow: /portal
 Disallow: /lead-desk
+Disallow: /lead-automation
 Disallow: /creative-financing
+Disallow: /operations
 Disallow: /sign-in
 Disallow: /api/
+
 Sitemap: https://baruch-ermi.org/sitemap.xml
