@@ -1,0 +1,32 @@
+name: Inquiry regression tests
+on:
+  pull_request:
+    paths:
+      - 'lib/inquiries.mjs'
+      - 'data/automations.js'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/inquiry-tests.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'lib/inquiries.mjs'
+      - 'data/automations.js'
+      - 'tests/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/inquiry-tests.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test
