@@ -3,6 +3,9 @@ on:
   pull_request:
     paths:
       - 'lib/inquiries.mjs'
+      - 'pages/api/inquiries.js'
+      - 'components/InquiryForm.js'
+      - 'lib/workspace.mjs'
       - 'data/automations.js'
       - 'tests/**'
       - 'package.json'
@@ -12,6 +15,9 @@ on:
     branches: [main]
     paths:
       - 'lib/inquiries.mjs'
+      - 'pages/api/inquiries.js'
+      - 'components/InquiryForm.js'
+      - 'lib/workspace.mjs'
       - 'data/automations.js'
       - 'tests/**'
       - 'package.json'
