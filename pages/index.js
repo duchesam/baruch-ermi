@@ -9,7 +9,7 @@ const journeys=[
  {icon:Handshake,label:'FOR REAL ESTATE AGENTS',title:'Bring the opportunity. Let’s find the fit.',body:'Have a property that needs a different approach? Share the details and explore a practical purchase conversation.',tags:['Property submissions','Creative terms','Agent relationships'],link:'/agent-partners',action:'Submit an opportunity',color:'violet'},
 ];
 export default function Home(){return <Layout title="Property Solutions & Investment Relationships in Tampa Bay" path="/">
- <Head><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Organization',name:'Baruch-Ermi LLC',url:'https://baruch-ermi.org/',telephone:'+1-833-523-3104',email:'admin@baruchermi.org',areaServed:['Tampa Bay','Hillsborough County','Riverview','Wimauma','Brandon','Wesley Chapel']})}}/></Head>
+ <Head><script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify({'@context':'https://schema.org','@type':'Organization',name:'Baruch-Ermi LLC',url:'https://baruch-ermi.org/',telephone:'+1-813-666-5633',areaServed:['Tampa Bay','Hillsborough County','Riverview','Wimauma','Brandon','Wesley Chapel']})}}/></Head>
  <section className="property-hero" aria-labelledby="hero-title">
   <img className="hero-photo" src="/images/florida-home-v2.webp" alt="Illustrative Florida home with tropical landscaping" width="1673" height="940" fetchPriority="high"/>
   <div className="hero-shade"/>
