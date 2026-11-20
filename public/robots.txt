@@ -1,8 +1,25 @@
 User-agent: *
 Allow: /
+Disallow: /api/
 Disallow: /portal
 Disallow: /lead-desk
 Disallow: /creative-financing
 Disallow: /sign-in
+Disallow: /operations
+Disallow: /lead-automation
+Disallow: /team-portal
+Disallow: /thank-you
+
+User-agent: OAI-SearchBot
+Allow: /
 Disallow: /api/
+Disallow: /portal
+Disallow: /lead-desk
+Disallow: /creative-financing
+Disallow: /sign-in
+Disallow: /operations
+Disallow: /lead-automation
+Disallow: /team-portal
+Disallow: /thank-you
+
 Sitemap: https://baruch-ermi.org/sitemap.xml
