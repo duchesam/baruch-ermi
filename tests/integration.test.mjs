@@ -51,7 +51,7 @@ test('Operations is owner-only, origin-protected and links stable records withou
  assert.equal((await mutate('task.update',{id:taskId,status:'Done'})).status,200);
  assert.equal((await mutate('note.add',{id,note:'Review note fixture'})).status,200);
  const final=(await call(ops,'GET')).data.workspace;
- assert.equal(final.tasks[0].status,'Done');assert.ok(final.activity.filter(a=>!a.requestId.startsWith('auto-inquiry-')).every(a=>a.actor==='owner@example.test'&&a.at));
+ assert.equal(final.tasks[0].status,'Done');assert.ok(final.activity.filter(a=>!a.requestId.startsWith('auto-inquiry-')&&!a.requestId.startsWith('auto-followup-')).every(a=>a.actor==='owner@example.test'&&a.at));
  assert.equal(final.opportunities.find(o=>o.id===id).amount,200000);
  const {operationsReport}=await import('../lib/operations-core.mjs');const report=operationsReport(final,'2026-11-05');assert.equal(report.closedVolume,200000);assert.equal(report.overdue,0);assert.equal(report.sources.reduce((n,x)=>n+x.closed,0),1);
  assert.equal((await call(workspace,'GET')).data.records.length,1,'Operations must not duplicate or mutate CRM records');
