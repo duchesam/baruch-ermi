@@ -22,12 +22,12 @@ test('Operations is owner-only, origin-protected and links stable records withou
  assert.equal((await call(ops,'GET',null,{authorized:false})).status,401);
  assert.equal((await call(ops,'POST',{}, {origin:'https://evil.example'})).status,403);
  let state=(await call(ops,'GET')).data;
- assert.equal(state.workspace.revision,0);assert.ok(state.links.some(l=>l.id===propertyId));
+ const baseline=state.workspace.revision;const autoCount=state.workspace.opportunities.length;assert.ok(autoCount>0);assert.ok(state.links.some(l=>l.id===propertyId));
  const command={requestId:'create-op-1',type:'opportunity.create',payload:{linkType:'property',linkId:propertyId,responsible:'Fixture owner',nextAction:'Review title fixture',nextDate:'2026-11-06'}};
- let saved=await call(ops,'POST',{revision:0,command});assert.equal(saved.status,200,JSON.stringify(saved));assert.equal(saved.data.workspace.opportunities.length,1);
- const id=saved.data.workspace.opportunities[0].id;
- const retry=await call(ops,'POST',{revision:0,command});assert.equal(retry.status,200);assert.equal(retry.data.workspace.opportunities.length,1);
- assert.equal((await call(ops,'POST',{revision:0,command:{...command,requestId:'stale-1'}})).status,409);
+ let saved=await call(ops,'POST',{revision:baseline,command});assert.equal(saved.status,200,JSON.stringify(saved));assert.equal(saved.data.workspace.opportunities.length,autoCount+1);
+ const id=saved.data.workspace.opportunities.find(o=>o.linkType==='property'&&o.linkId===propertyId).id;
+ const retry=await call(ops,'POST',{revision:baseline,command});assert.equal(retry.status,200);assert.equal(retry.data.workspace.opportunities.length,autoCount+1);
+ assert.equal((await call(ops,'POST',{revision:baseline,command:{...command,requestId:'stale-1'}})).status,409);
  let revision=saved.data.workspace.revision;
  async function mutate(type,payload){const r=await call(ops,'POST',{revision,command:{type,payload,requestId:randomBytes(12).toString('hex')}});if(r.status===200)revision=r.data.workspace.revision;return r;}
  assert.equal((await mutate('opportunity.create',command.payload)).status,400);
@@ -42,22 +42,22 @@ test('Operations is owner-only, origin-protected and links stable records withou
  assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:-1})).status,400);
  assert.equal((await mutate('opportunity.update',{id,stage:'Closed',amount:200000})).status,200);
  assert.equal((await mutate('opportunity.update',{id,responded:true})).status,200);
- const firstResponse=(await call(ops,'GET')).data.workspace.opportunities[0].firstResponseAt;
+ const firstResponse=(await call(ops,'GET')).data.workspace.opportunities.find(o=>o.id===id).firstResponseAt;
  assert.equal((await mutate('opportunity.update',{id,responded:true})).status,200);
- assert.equal((await call(ops,'GET')).data.workspace.opportunities[0].firstResponseAt,firstResponse);
+ assert.equal((await call(ops,'GET')).data.workspace.opportunities.find(o=>o.id===id).firstResponseAt,firstResponse);
  assert.equal((await mutate('task.create',{opportunityId:id,title:'Fictional inspection',due:'2026-02-31'})).status,400);
  const t=await mutate('task.create',{opportunityId:id,title:'Fictional inspection',due:'2026-01-01',responsible:'Fixture owner'});assert.equal(t.status,200);
  const taskId=t.data.workspace.tasks[0].id;
  assert.equal((await mutate('task.update',{id:taskId,status:'Done'})).status,200);
  assert.equal((await mutate('note.add',{id,note:'Review note fixture'})).status,200);
  const final=(await call(ops,'GET')).data.workspace;
- assert.equal(final.tasks[0].status,'Done');assert.ok(final.activity.every(a=>a.actor==='owner@example.test'&&a.at));
- assert.equal(final.opportunities[0].amount,200000);
- const {operationsReport}=await import('../lib/operations-core.mjs');const report=operationsReport(final,'2026-11-05');assert.equal(report.closedVolume,200000);assert.equal(report.overdue,0);assert.equal(report.sources[0].closed,1);
+ assert.equal(final.tasks[0].status,'Done');assert.ok(final.activity.filter(a=>!a.requestId.startsWith('auto-inquiry-')).every(a=>a.actor==='owner@example.test'&&a.at));
+ assert.equal(final.opportunities.find(o=>o.id===id).amount,200000);
+ const {operationsReport}=await import('../lib/operations-core.mjs');const report=operationsReport(final,'2026-11-05');assert.equal(report.closedVolume,200000);assert.equal(report.overdue,0);assert.equal(report.sources.reduce((n,x)=>n+x.closed,0),1);
  assert.equal((await call(workspace,'GET')).data.records.length,1,'Operations must not duplicate or mutate CRM records');
  assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:''})).status,400);
  assert.equal((await mutate('opportunity.update',{id,stage:'Lost',lostReason:'Fixture withdrew'})).status,200);
- const lost=(await call(ops,'GET')).data.workspace;assert.equal(operationsReport(lost).closedVolume,0);assert.equal(lost.opportunities[0].closedAt,'');
+ const lost=(await call(ops,'GET')).data.workspace;assert.equal(operationsReport(lost).closedVolume,0);assert.equal(lost.opportunities.find(o=>o.id===id).closedAt,'');
 });
 
 test('complete company backup is owner-only and preserves linked records, scenarios and Operations without credentials',async()=>{
@@ -67,7 +67,7 @@ test('complete company backup is owner-only and preserves linked records, scenar
  assert.equal(r.headers['Cache-Control'],'private, no-store');assert.ok(r.headers['Content-Disposition'].includes('attachment'));
  const {checksum,...payload}=r.data;const {counts}=payload;
  const {backupChecksum,inspectLeadBackup}=await import('../lib/company-backup.mjs');
- assert.equal(checksum,backupChecksum(payload));const backupFile=path.join(dir,'company-backup.json');fs.writeFileSync(backupFile,JSON.stringify(r.data));const {execFileSync}=await import('node:child_process');const verified=JSON.parse(execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{encoding:'utf8'}));assert.equal(verified.integrity,'verified');fs.writeFileSync(backupFile,JSON.stringify({...r.data,counts:{properties:999}}));assert.throws(()=>execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{stdio:'pipe'}));fs.unlinkSync(backupFile);assert.equal(counts.properties,1);assert.equal(counts.scenarios,2);assert.equal(counts.opportunities,1);
+ assert.equal(checksum,backupChecksum(payload));const backupFile=path.join(dir,'company-backup.json');fs.writeFileSync(backupFile,JSON.stringify(r.data));const {execFileSync}=await import('node:child_process');const verified=JSON.parse(execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{encoding:'utf8'}));assert.equal(verified.integrity,'verified');fs.writeFileSync(backupFile,JSON.stringify({...r.data,counts:{properties:999}}));assert.throws(()=>execFileSync(process.execPath,['scripts/verify-company-backup.mjs',backupFile],{stdio:'pipe'}));fs.unlinkSync(backupFile);assert.equal(counts.properties,1);assert.equal(counts.scenarios,2);assert.equal(counts.opportunities,(await call((await import('../pages/api/operations.js')).default,'GET')).data.workspace.opportunities.length);
  assert.deepEqual(payload.workspace,(await call(workspace,'GET')).data);
  assert.equal(payload.scenarios[0].property_id,propertyId);assert.ok(payload.inquiries.some(i=>i.data.consent&&i.data.source));
  assert.ok(!JSON.stringify(payload).includes(process.env.BETTER_AUTH_SECRET));assert.ok(!Object.hasOwn(payload,'users'));assert.ok(!Object.hasOwn(payload,'sessions'));
