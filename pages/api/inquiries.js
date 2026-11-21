@@ -3,7 +3,7 @@ import {database} from '../../lib/db.mjs';
 import {validateInquiry,fingerprint} from '../../lib/inquiries.mjs';
 import {randomUUID,addInquiryProperty} from '../../lib/workspace.mjs';
 import {createHmac} from 'node:crypto';
-import {ensureInquiryOpportunity} from '../../lib/inquiry-operations.mjs';
+import {ensureInquiryFollowup} from '../../lib/inquiry-operations.mjs';
 export default async function handler(req,res){res.setHeader('Cache-Control','private, no-store');try{
  if(req.method==='GET'){await requireOwner(req);const {rows}=await database().query('SELECT id,kind,created_at,data FROM inquiries ORDER BY created_at DESC');return res.json(rows.map(r=>({...r,data:JSON.parse(r.data)})));}
  if(req.method!=='POST')return res.status(405).end();requireOrigin(req);const {kind,data}=validateInquiry(req.body);const db=database();
@@ -16,6 +16,6 @@ export default async function handler(req,res){res.setHeader('Cache-Control','pr
   console.error('Inquiry saved but CRM property linking failed',{inquiryId:inquiry.id,kind:inquiry.kind,error:linkError});
   return res.status(202).json({id:inquiry.id,saved:true,crmLinked:false,message:'Your inquiry was received and saved. Our team may need to link the property to the workspace manually.'});
  }
- try{await ensureInquiryOpportunity(inquiry);}catch(opsError){console.error('Inquiry saved but Operations opportunity creation failed',{inquiryId:inquiry.id,error:opsError});return res.status(202).json({id:inquiry.id,saved:true,crmLinked:true,operationsLinked:false,message:'Your inquiry was received and saved. Our team will review it.'});}
- return res.status(201).json({id:inquiry.id,saved:true,crmLinked:true,operationsLinked:true,message:'Your inquiry has been saved. Our team can review it in the company workspace.'});
+ try{await ensureInquiryFollowup(inquiry);}catch(opsError){console.error('Inquiry saved but Operations opportunity creation failed',{inquiryId:inquiry.id,error:opsError});return res.status(202).json({id:inquiry.id,saved:true,crmLinked:true,operationsLinked:false,followupCreated:false,message:'Your inquiry was received and saved. Our team will review it.'});}
+ return res.status(201).json({id:inquiry.id,saved:true,crmLinked:true,operationsLinked:true,followupCreated:true,message:'Your inquiry has been saved. Our team can review it in the company workspace.'});
  }catch(e){apiError(res,e);}}
