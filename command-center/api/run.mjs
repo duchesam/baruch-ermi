@@ -10,6 +10,9 @@ export default async function handler(req,res){
  const task=req.body?.task;
  if(typeof task!=='string'||!task.trim()||Buffer.byteLength(task)>8000)return res.status(400).json({error:'Invalid task'});
  const live=false; // Paid testing paused pending credit purchase.
+ const project=req.body?.project||'general';
+ if(typeof project!=='string'||project.length>80)return res.status(400).json({error:'Invalid project'});
+ const projects=await sql`SELECT slug FROM command_projects WHERE slug=${project}`;if(!projects.length)return res.status(400).json({error:'Unknown project'});
  stage='gateway-auth';
  const token=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN;
  if(live&&!token)throw Error('Missing gateway credential');
@@ -17,7 +20,7 @@ export default async function handler(req,res){
  const result=await collaborate(task,call);
  if(!live)result.status='offline-demo';
  stage='persist';
- await sql`INSERT INTO command_runs(task,draft,review,final,status) VALUES(${task},${result.draft},${result.review},${result.final},${result.status})`;
+ await sql`INSERT INTO command_runs(task,draft,review,final,status,project_slug) VALUES(${task},${result.draft},${result.review},${result.final},${result.status},${project})`;
  return res.json(result);
  }catch(e){const reason=e.message==='Missing gateway credential'?'missing-credential':e.message==='Budget exhausted'?'budget-exhausted':/^Gateway request failed: [0-9]{3}$/.test(e.message)?e.message:'operation-failed';console.error(JSON.stringify({stage,reason}));return res.status(503).json({error:reason,stage});}
 }
