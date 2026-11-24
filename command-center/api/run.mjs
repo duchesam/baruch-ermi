@@ -25,11 +25,20 @@ export default async function handler(req,res){
  const catalog=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=100',{headers:{'x-goog-api-key':process.env.GEMINI_API_KEY},signal:AbortSignal.timeout(10000)});
  if(!catalog.ok)return res.status(503).json({error:'Gemini model discovery failed',httpStatus:catalog.status});
  const available=(await catalog.json()).models||[];
- const allowed=['gemini-3.1-flash-lite','gemini-3-flash-preview','gemini-2.5-flash-lite','gemini-2.5-flash'];
- const model=allowed.find(id=>available.some(m=>m.name==='models/'+id&&m.supportedGenerationMethods?.includes('generateContent')));
- if(!model)return res.status(503).json({error:'No approved Flash model available',available:available.filter(m=>m.supportedGenerationMethods?.includes('generateContent')).map(m=>m.name)});
- const response=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},body:JSON.stringify({contents:[{parts:[{text:task}]}],generationConfig:{maxOutputTokens:2048}}),signal:AbortSignal.timeout(45000)});
- if(!response.ok)return res.status(503).json({error:'Gemini request failed',httpStatus:response.status});
+ const allowed=['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-3.1-flash-lite'];
+ const candidates=allowed.filter(id=>available.some(m=>m.name==='models/'+id&&m.supportedGenerationMethods?.includes('generateContent')));
+ if(!candidates.length)return res.status(503).json({error:'No approved Flash model available'});
+ let response,model;const attempts=[];
+ for(const id of candidates.slice(0,2)){
+ model=id;
+ try{response=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},body:JSON.stringify({contents:[{parts:[{text:task}]}],generationConfig:{maxOutputTokens:2048}}),signal:AbortSignal.timeout(15000)});}catch{return res.status(503).json({error:'Gemini network timeout or failure',model,attempts});}
+ if(response.ok)break;
+ let code='UNKNOWN';try{const j=await response.json();if(/^[A-Z_]{1,50}$/.test(j.error?.status||''))code=j.error.status;}catch{}
+ attempts.push({model,httpStatus:response.status,code});
+ console.error(JSON.stringify({stage:'gemini-generation',model,httpStatus:response.status,code}));
+ if(![404,503].includes(response.status))break;
+ }
+ if(!response?.ok)return res.status(503).json({error:'Gemini generation unavailable',attempts});
  const data=await response.json();const answer=data.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text||'').join('');
  if(!answer)return res.status(503).json({error:'Gemini returned no text'});
  result={draft:answer,review:'Not independently reviewed',final:answer,status:'gemini-only',model};
