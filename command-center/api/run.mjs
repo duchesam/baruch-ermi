@@ -9,9 +9,9 @@ export default async function handler(req,res){
  const sql=neon(process.env.DATABASE_URL);
  const task=req.body?.task;
  if(typeof task!=='string'||!task.trim()||Buffer.byteLength(task)>8000)return res.status(400).json({error:'Invalid task'});
- const live=process.env.COMMAND_LIVE==='true';
+ const live=false; // Paid testing paused pending credit purchase.
  stage='gateway-auth';
- const token=process.env.VERCEL_OIDC_TOKEN||process.env.AI_GATEWAY_API_KEY;
+ const token=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN;
  if(live&&!token)throw Error('Missing gateway credential');
  const call=live?gatewayCaller({key:token,enabled:true,reserve:async amount=>{stage='budget';const rows=await sql`UPDATE command_budget SET reserved=reserved+${amount} WHERE id=1 AND reserved+${amount}<=4500000 RETURNING reserved`;if(!rows.length)throw Error('Budget exhausted');stage='gateway-request';}}):async(model)=>'Offline demonstration: '+model+' (no AI request)';
  const result=await collaborate(task,call);
