@@ -1,0 +1,4 @@
+# AI Command Center pilot
+Standalone development module; not deployed or wired into the public website.
+Run offline tests: node --test command-center/engine.test.mjs
+Live calls disabled by default. Configure an isolated Neon database, implement the atomic reservation adapter from schema.sql, and configure a dedicated Gateway key and provider-side budget before enabling. Never commit credentials or real customer data. Reserve $0.10 per request, at most 45 requests under the $4.50 application reservation ceiling. This is a conservative estimate, not a guaranteed provider billing cap; verify live pricing and actual usage before activation. No retries. Three calls per collaboration. No tools or external actions granted to models. Dashboard authentication, persistence adapter, live tests and benchmark remain pending.
