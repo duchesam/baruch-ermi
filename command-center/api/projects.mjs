@@ -1,0 +1,2 @@
+import {neon} from '@neondatabase/serverless';
+export default async function handler(req,res){res.setHeader('Cache-Control','no-store');if(req.method!=='GET')return res.status(405).end();try{const sql=neon(process.env.DATABASE_URL);return res.json({projects:await sql`SELECT slug,name,description FROM command_projects ORDER BY name`});}catch{return res.status(503).json({error:'Projects unavailable'});}}
