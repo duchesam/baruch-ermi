@@ -22,11 +22,17 @@ export default async function handler(req,res){
  if(mode==='gemini'){
  stage='gemini-request';
  if(!process.env.GEMINI_API_KEY)return res.status(503).json({error:'Gemini credential missing'});
- const response=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},body:JSON.stringify({contents:[{parts:[{text:task}]}],generationConfig:{maxOutputTokens:2048}}),signal:AbortSignal.timeout(45000)});
+ const catalog=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=100',{headers:{'x-goog-api-key':process.env.GEMINI_API_KEY},signal:AbortSignal.timeout(10000)});
+ if(!catalog.ok)return res.status(503).json({error:'Gemini model discovery failed',httpStatus:catalog.status});
+ const available=(await catalog.json()).models||[];
+ const allowed=['gemini-3.1-flash-lite','gemini-3-flash-preview','gemini-2.5-flash-lite','gemini-2.5-flash'];
+ const model=allowed.find(id=>available.some(m=>m.name==='models/'+id&&m.supportedGenerationMethods?.includes('generateContent')));
+ if(!model)return res.status(503).json({error:'No approved Flash model available',available:available.filter(m=>m.supportedGenerationMethods?.includes('generateContent')).map(m=>m.name)});
+ const response=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+model+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},body:JSON.stringify({contents:[{parts:[{text:task}]}],generationConfig:{maxOutputTokens:2048}}),signal:AbortSignal.timeout(45000)});
  if(!response.ok)return res.status(503).json({error:'Gemini request failed',httpStatus:response.status});
  const data=await response.json();const answer=data.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text||'').join('');
  if(!answer)return res.status(503).json({error:'Gemini returned no text'});
- result={draft:answer,review:'Not independently reviewed',final:answer,status:'gemini-only',model:'gemini-2.5-flash'};
+ result={draft:answer,review:'Not independently reviewed',final:answer,status:'gemini-only',model};
  }else if(mode==='offline'){result=await collaborate(task,call);result.status='offline-demo';}else{return res.status(400).json({error:'Mode unavailable'});}
  stage='persist';
  await sql`INSERT INTO command_runs(task,draft,review,final,status,project_slug) VALUES(${task},${result.draft},${result.review},${result.final},${result.status},${project})`;
