@@ -1,0 +1,2 @@
+import {neon} from '@neondatabase/serverless';
+export default async function handler(req,res){res.setHeader('Cache-Control','no-store');if(req.method!=='GET')return res.status(405).end();try{const sql=neon(process.env.DATABASE_URL);const [row]=await sql`SELECT reserved FROM command_budget WHERE id=1`;return res.json({database:'connected',reserved:Number(row.reserved)/1000000,live:process.env.COMMAND_LIVE==='true'});}catch{return res.status(503).json({database:'unavailable'});}}
