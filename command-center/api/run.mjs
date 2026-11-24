@@ -17,8 +17,17 @@ export default async function handler(req,res){
  const token=process.env.AI_GATEWAY_API_KEY||process.env.VERCEL_OIDC_TOKEN;
  if(live&&!token)throw Error('Missing gateway credential');
  const call=live?gatewayCaller({key:token,enabled:true,reserve:async amount=>{stage='budget';const rows=await sql`UPDATE command_budget SET reserved=reserved+${amount} WHERE id=1 AND reserved+${amount}<=4500000 RETURNING reserved`;if(!rows.length)throw Error('Budget exhausted');stage='gateway-request';}}):async(model)=>'Offline demonstration: '+model+' (no AI request)';
- const result=await collaborate(task,call);
- if(!live)result.status='offline-demo';
+ let result;
+ const mode=req.body?.mode||'offline';
+ if(mode==='gemini'){
+ stage='gemini-request';
+ if(!process.env.GEMINI_API_KEY)return res.status(503).json({error:'Gemini credential missing'});
+ const response=await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':process.env.GEMINI_API_KEY},body:JSON.stringify({contents:[{parts:[{text:task}]}],generationConfig:{maxOutputTokens:2048}}),signal:AbortSignal.timeout(45000)});
+ if(!response.ok)return res.status(503).json({error:'Gemini request failed',httpStatus:response.status});
+ const data=await response.json();const answer=data.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text||'').join('');
+ if(!answer)return res.status(503).json({error:'Gemini returned no text'});
+ result={draft:answer,review:'Not independently reviewed',final:answer,status:'gemini-only',model:'gemini-2.5-flash'};
+ }else if(mode==='offline'){result=await collaborate(task,call);result.status='offline-demo';}else{return res.status(400).json({error:'Mode unavailable'});}
  stage='persist';
  await sql`INSERT INTO command_runs(task,draft,review,final,status,project_slug) VALUES(${task},${result.draft},${result.review},${result.final},${result.status},${project})`;
  return res.json(result);
