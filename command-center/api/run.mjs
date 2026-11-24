@@ -25,7 +25,7 @@ export default async function handler(req,res){
  const catalog=await fetch('https://generativelanguage.googleapis.com/v1beta/models?pageSize=100',{headers:{'x-goog-api-key':process.env.GEMINI_API_KEY},signal:AbortSignal.timeout(10000)});
  if(!catalog.ok)return res.status(503).json({error:'Gemini model discovery failed',httpStatus:catalog.status});
  const available=(await catalog.json()).models||[];
- const allowed=['gemini-2.5-flash-lite','gemini-2.5-flash','gemini-3.1-flash-lite'];
+ const allowed=['gemini-3.1-flash-lite','gemini-3-flash-preview'];
  const candidates=allowed.filter(id=>available.some(m=>m.name==='models/'+id&&m.supportedGenerationMethods?.includes('generateContent')));
  if(!candidates.length)return res.status(503).json({error:'No approved Flash model available'});
  let response,model;const attempts=[];
