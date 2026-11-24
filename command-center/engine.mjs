@@ -14,7 +14,7 @@ export function gatewayCaller({key,enabled=false,reserve}){
  // Conservative reservation, never refunded automatically, including failures.
  await reserve(100000);
  const r=await fetch("https://ai-gateway.vercel.sh/v1/chat/completions",{method:"POST",headers:{Authorization:"Bearer "+key,"Content-Type":"application/json"},body:JSON.stringify({model,messages:[{role:"system",content:system},{role:"user",content:user}],max_completion_tokens:2000}),signal:AbortSignal.timeout(60000)});
- if(!r.ok) throw Error("Gateway request failed: "+r.status);
+ if(!r.ok){let code="unclassified";try{const j=await r.json();const raw=j.error?.code||j.error?.type; if(["customer_verification_required","insufficient_funds","quota_for_entity_exceeded","forbidden","model_not_allowed","invalid_api_key"].includes(raw))code=raw;}catch{} console.error(JSON.stringify({event:"gateway-rejection",model,status:r.status,code}));throw Error("Gateway request failed: "+r.status);}
  const j=await r.json();const out=j.choices?.[0]?.message?.content;
  if(typeof out!=="string"||!out.trim()) throw Error("Empty model output");
  return out;
